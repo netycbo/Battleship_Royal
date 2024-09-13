@@ -11,7 +11,16 @@ namespace Battleship_Royal.Data.DbContext
         {
 
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TemporaryGame>()
+                .HasNoKey(); 
+
+            base.OnModelCreating(modelBuilder);
+        }
 
         public DbSet<Game> Games { get; set; }
+        public DbSet<TemporaryGame> TemporaryGames { get; set; }
     }
+   
 }

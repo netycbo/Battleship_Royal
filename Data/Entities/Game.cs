@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Battleship_Royal.Data.Entities.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Battleship_Royal.Data.Entities
 {
@@ -17,6 +18,6 @@ namespace Battleship_Royal.Data.Entities
 
         public TimeOnly EndingOfGame { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
 
-
+        public List<ApplicationUser> Players { get; set; } = new List<ApplicationUser>();
     }
 }
