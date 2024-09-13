@@ -4,6 +4,7 @@ using Battleship_Royal.Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Battleship_Royal.Data.Migrations
 {
     [DbContext(typeof(BattleshipsDbContext))]
-    partial class BattleshipsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240913094007_NaviProperty")]
+    partial class NaviProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,27 +147,6 @@ namespace Battleship_Royal.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Battleship_Royal.Data.Entities.TemporaryGame", b =>
-                {
-                    b.Property<bool>("IsSpeedGame")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Player1Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Player2Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Timer")
-                        .HasColumnType("int");
-
-                    b.HasIndex("Player1Id");
-
-                    b.HasIndex("Player2Id");
-
-                    b.ToTable("TemporaryGames");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -313,21 +295,6 @@ namespace Battleship_Royal.Data.Migrations
                         .HasForeignKey("PlayersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Battleship_Royal.Data.Entities.TemporaryGame", b =>
-                {
-                    b.HasOne("Battleship_Royal.Data.Entities.Identity.ApplicationUser", "Player1")
-                        .WithMany()
-                        .HasForeignKey("Player1Id");
-
-                    b.HasOne("Battleship_Royal.Data.Entities.Identity.ApplicationUser", "Player2")
-                        .WithMany()
-                        .HasForeignKey("Player2Id");
-
-                    b.Navigation("Player1");
-
-                    b.Navigation("Player2");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
