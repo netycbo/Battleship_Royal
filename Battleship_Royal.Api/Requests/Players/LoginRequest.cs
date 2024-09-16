@@ -1,7 +1,7 @@
-﻿using Battleship_Royal.Api.Responses;
+﻿using Battleship_Royal.Api.Responses.Players;
 using MediatR;
 
-namespace Battleship_Royal.Api.Requests
+namespace Battleship_Royal.Api.Requests.Players
 {
     public class LoginRequest : IRequest<LoginResponse>
     {

@@ -1,6 +1,6 @@
-﻿namespace Battleship_Royal.Api.Dtos
+﻿namespace Battleship_Royal.Api.Dtos.Game
 {
-    public class NewGameDto
+    public class PrepareGameDto
     {
         public string Player1 { get; set; }
         public string Player2 { get; set; } = string.Empty;

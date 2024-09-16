@@ -1,10 +1,10 @@
-﻿using Battleship_Royal.Api.Responses;
+﻿using Battleship_Royal.Api.Responses.Players;
 using Battleship_Royal.Api.Validation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace Battleship_Royal.Api.Requests
+namespace Battleship_Royal.Api.Requests.Players
 {
     public class NewUserRegistrationRequest : IRequest<NewUserRegistrationResponse>
     {
@@ -15,10 +15,10 @@ namespace Battleship_Royal.Api.Requests
         [DataType(DataType.Password)]
         public string Password { get; set; }
         [Required]
-        [DataType(DataType.Password),Compare(nameof(Password),ErrorMessage = "Passwords don't match")]
+        [DataType(DataType.Password), Compare(nameof(Password), ErrorMessage = "Passwords don't match")]
         public string ConfirmPassword { get; set; }
         [Required]
-        [NoSpecialCharactersAttribute]
+        [NoSpecialCharacters]
         public string NickName { get; set; }
         public string Role { get; set; }
     }

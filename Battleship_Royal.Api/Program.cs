@@ -7,6 +7,8 @@ using System;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Battleship_Royal.Api.Handlers.Services.Interfaces;
+using Battleship_Royal.Api.Handlers.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,11 +19,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Rejestracja DbContext
 builder.Services.AddDbContext<BattleshipsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Rejestracja tożsamości
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
@@ -30,9 +31,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<BattleshipsDbContext>()
 .AddDefaultTokenProviders();
 
-// Rejestracja MediatR
+
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddAutoMapper(typeof(Profiles).GetTypeInfo().Assembly, typeof(Profiles).Assembly);
+
+builder.Services.AddTransient<ISaveGamesServices, SaveGamesServices>();
+builder.Services.AddTransient<ILoadGameFromTemporaryGames, LoadGameFromTemporaryGames>();
 
 var app = builder.Build();
 

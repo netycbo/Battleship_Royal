@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Battleship_Royal.Api.Dtos;
-using Battleship_Royal.Api.Requests;
-using Battleship_Royal.Api.Responses;
+using Battleship_Royal.Api.Requests.Players;
+using Battleship_Royal.Api.Responses.Players;
 using Battleship_Royal.Data.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;

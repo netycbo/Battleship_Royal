@@ -1,4 +1,4 @@
-﻿using Battleship_Royal.Api.Requests;
+﻿using Battleship_Royal.Api.Requests.Players;
 
 namespace Battleship_Royal.Api.Dtos
 {
