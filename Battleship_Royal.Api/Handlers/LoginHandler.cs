@@ -16,7 +16,7 @@ namespace Battleship_Royal.Api.Handlers
     {
         public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
         {
-          var userExist = await  userManager.FindByNameAsync(request.Email);
+          var userExist = await  userManager.FindByEmailAsync(request.Email);
           if (userExist == null)
           {
               throw new Exception("User not found");

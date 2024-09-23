@@ -17,8 +17,7 @@ namespace Battleship_Royal.Data.Entities
         public TimeOnly BeginningOfGame { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
 
         public TimeOnly EndingOfGame { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
-        public bool IsInGame { get; set; }
-
         public List<ApplicationUser> Players { get; set; } = new List<ApplicationUser>();
+        public ComputerPlayer ComputerPlayer { get; set; }
     }
 }

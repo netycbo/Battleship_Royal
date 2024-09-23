@@ -6,6 +6,7 @@ namespace Battleship_Royal.Data.Entities
     {
         public ApplicationUser Player1 { get; set; }
         public ApplicationUser Player2 { get; set; }
+        public ComputerPlayer ComputerPlayer { get; set; }
         public bool IsSpeedGame { get; set; }
         public int Timer { get; set; }
     }

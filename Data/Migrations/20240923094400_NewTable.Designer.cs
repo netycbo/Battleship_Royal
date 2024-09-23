@@ -4,6 +4,7 @@ using Battleship_Royal.Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Battleship_Royal.Data.Migrations
 {
     [DbContext(typeof(BattleshipsDbContext))]
-    partial class BattleshipsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240923094400_NewTable")]
+    partial class NewTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,6 +77,9 @@ namespace Battleship_Royal.Data.Migrations
                     b.Property<TimeOnly>("EndingOfGame")
                         .HasColumnType("time");
 
+                    b.Property<bool>("IsInGame")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Player1NickName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -110,9 +116,6 @@ namespace Battleship_Royal.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsInGame")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("JoinedDate")

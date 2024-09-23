@@ -20,26 +20,26 @@ namespace Battleship_Royal.Api.Controllers
         [HttpGet("rematch/{gameID}")]
         public async Task<IActionResult>GetGameSettingsFromDb(RematchRequest request)
         {
-            var rematchGame = await mediator.Send(request);
-            return Ok(rematchGame);
+            var result = await mediator.Send(request);
+            return Ok(result);
         }
         [HttpPost("save-To-Db/{gameID}")]
         public async Task<IActionResult> SaveToDbGames(SaveToGamesDbDto request)
         {
-            var rematchGame = await mediator.Send(request);
-            return Ok(rematchGame);
+            var result = await mediator.Send(request);
+            return Ok(result);
         }
         [HttpPost("save-To-temp/{gameID}")]
         public async Task<IActionResult> SaveToTemporaryGame(SaveToTemporaryDbDto request)
         {
-            var rematchGame = await mediator.Send(request);
-            return Ok(rematchGame);
+            var result = await mediator.Send(request);
+            return Ok(result);
         }
         [HttpPost("game/{gameID}")]
         public async Task<IActionResult> SaveToDbGames(GameRequest request)
         {
-            var rematchGame = await mediator.Send(request);
-            return Ok(rematchGame);
+            var result = await mediator.Send(request);
+            return Ok(result);
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class NewUserDto
     {
-        public string Nickname { get; set; }
+        public string NickName { get; set; }
         public DateOnly JoinDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
         public string Role { get; set; }
 

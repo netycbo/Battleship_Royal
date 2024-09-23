@@ -2,10 +2,10 @@
 {
     public class PrepareGameDto
     {
+        public int GameId { get; set; }
         public string Player1 { get; set; }
-        public string Player2 { get; set; } = string.Empty;
-        public string GameWinner { get; set; }
+        public string Player2 { get; set; } = string.Empty;   
         public bool IsSpeedGame { get; set; } = false;
-        public int Timer { get; set; } = 0;
+        public int Timer { get; set; } = 10;
     }
 }

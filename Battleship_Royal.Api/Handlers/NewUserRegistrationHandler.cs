@@ -8,38 +8,34 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Battleship_Royal.Api.Handlers
 {
-    public class NewUserRegistrationHandler(IMapper mapper, IMediator mediator,
-        UserManager<ApplicationUser> userManager) : IRequestHandler<NewUserRegistrationRequest, NewUserRegistrationResponse>
+    public class NewUserRegistrationHandler(IMapper mapper, IMediator mediator, UserManager<ApplicationUser> userManager) : IRequestHandler<NewUserRegistrationRequest, NewUserRegistrationResponse>
     {
         public async Task<NewUserRegistrationResponse> Handle(NewUserRegistrationRequest request, CancellationToken cancellationToken)
         {
-            var userExist = await userManager.FindByNameAsync(request.Email);
+            var existingUser = await userManager.FindByEmailAsync(request.Email);
+            if (existingUser != null)
+            {
+                throw new Exception("User with this email already exists");
+            }
 
-            if (userExist != null)
-            {
-               throw new Exception("User already exist");
-            }
-            var EmailExist = await userManager.FindByEmailAsync(request.Email);
-            if (EmailExist != null) 
-            {
-                throw new Exception("Email already exist");
-            }
             var user = mapper.Map<ApplicationUser>(request);
-            var result = await userManager.CreateAsync(user, request.Password);
-            if (!result.Succeeded)
+            var creationResult = await userManager.CreateAsync(user, request.Password);
+            if (!creationResult.Succeeded)
             {
-                throw new Exception("User creation failed");
+                throw new Exception("User creation failed: " + string.Join(", ", creationResult.Errors.Select(e => e.Description)));
             }
 
-            var roleAssighment = await userManager.AddToRoleAsync(user, "Player");
-            if (!roleAssighment.Succeeded)
+            var roleAssignmentResult = await userManager.AddToRoleAsync(user, "Player");
+            if (!roleAssignmentResult.Succeeded)
             {
-                throw new Exception("Role assignment failed");
+                throw new Exception("Role assignment failed: " + string.Join(", ", roleAssignmentResult.Errors.Select(e => e.Description)));
             }
+
             return new NewUserRegistrationResponse
             {
                 Data = mapper.Map<NewUserDto>(user)
             };
         }
     }
+
 }

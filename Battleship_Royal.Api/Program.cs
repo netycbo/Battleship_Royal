@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Battleship_Royal.Api.Handlers.Services.Interfaces;
 using Battleship_Royal.Api.Handlers.Services;
+using Battleship_Royal.Data.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,8 @@ builder.Services.AddAutoMapper(typeof(Profiles).GetTypeInfo().Assembly, typeof(P
 
 builder.Services.AddTransient<ISaveGamesServices, SaveGamesServices>();
 builder.Services.AddTransient<ILoadGameFromTemporaryGames, LoadGameFromTemporaryGames>();
+builder.Services.AddTransient<IUserIdService, UserIdService>();
+builder.Services.AddScoped<UserManager<ApplicationUser>>();
 
 var app = builder.Build();
 

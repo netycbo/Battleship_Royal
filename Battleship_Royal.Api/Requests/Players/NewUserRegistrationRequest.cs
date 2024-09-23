@@ -20,6 +20,6 @@ namespace Battleship_Royal.Api.Requests.Players
         [Required]
         [NoSpecialCharacters]
         public string NickName { get; set; }
-        public string Role { get; set; }
+        
     }
 }

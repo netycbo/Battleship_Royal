@@ -1,10 +1,11 @@
 ﻿using Battleship_Royal.Api.Dtos;
+using Battleship_Royal.Api.Dtos.Game;
 
 namespace Battleship_Royal.Api.Handlers.Services.Interfaces
 {
     public interface ISaveGamesServices
     {
-        Task SaveToGamesAsync(NewGameDto newGameDto);
-        Task SaveToTemporaryGameAsync(NewGameDto newGame);
+        //Task SaveToGamesAsync(GameDto newGameDto);
+        Task SaveToTemporaryGameAsync(PrepareGameDto newGame);
     }
 }
