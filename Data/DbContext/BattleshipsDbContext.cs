@@ -14,7 +14,12 @@ namespace Battleship_Royal.Data.DbContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TemporaryGame>()
-                .HasNoKey(); 
+                .HasNoKey();
+            modelBuilder.Entity<ComputerPlayer>().HasData(new ComputerPlayer
+            {
+                Id = 1,
+                NickName = "Red October"
+            });
 
             base.OnModelCreating(modelBuilder);
         }
