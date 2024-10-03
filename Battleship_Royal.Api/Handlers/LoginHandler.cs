@@ -22,19 +22,23 @@ namespace Battleship_Royal.Api.Handlers
               throw new Exception("User not found");
           }
           
-          var correctPassword = userManager.CheckPasswordAsync(userExist, request.Password);
-          if (!correctPassword.Result)
+          var correctPassword = await userManager.CheckPasswordAsync(userExist, request.Password);
+          if (!correctPassword)
           {
               throw new Exception("Wrong password");
           }
-          var token = GenerateJwtToken(userExist);
+            var roles = await userManager.GetRolesAsync(userExist);
+
+            var token = await GenerateJwtToken(userExist, roles);
+            
           return new LoginResponse
           {
-              Data = mapper.Map<LoginDto>(userExist)
+              Data = mapper.Map<LoginDto>(userExist),
+              Token = token
           };
           
         }
-        public async Task<string> GenerateJwtToken(ApplicationUser user)
+        public async Task<string> GenerateJwtToken(ApplicationUser user, IList<string> role)
         {
             var roles = await userManager.GetRolesAsync(user);
 
@@ -44,6 +48,7 @@ namespace Battleship_Royal.Api.Handlers
             {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Actor, user.JoinedDate.ToString())
             };
             
@@ -53,7 +58,9 @@ namespace Battleship_Royal.Api.Handlers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddDays(2),
+                Issuer = configuration["Jwt:Issuer"],
+                Audience = configuration["Jwt:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

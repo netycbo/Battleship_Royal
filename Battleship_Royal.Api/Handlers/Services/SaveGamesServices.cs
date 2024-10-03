@@ -19,10 +19,25 @@ namespace Battleship_Royal.Api.Handlers.Services
         }
         public async Task SaveToTemporaryGameAsync(PrepareGameDto temporaryGame)
         {
-            ArgumentNullException.ThrowIfNull(temporaryGame);
-            var game = mapper.Map<TemporaryGame>(temporaryGame);
-            context.TemporaryGames.Add(game);
-            await context.SaveChangesAsync();
+            try
+            {
+                if (temporaryGame == null)
+                {
+                    throw new ArgumentNullException(nameof(temporaryGame));
+                }
+                var game = mapper.Map<TemporaryGame>(temporaryGame);
+                if (game == null)
+                {
+                    throw new Exception("Mapping failed: game is null");
+                }
+                context.TemporaryGames.AddRange(game);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while saving to database: {ex.Message}", ex);
+            }
+           
         }
     }
 }

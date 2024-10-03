@@ -1,15 +1,18 @@
-﻿using Battleship_Royal.Api.Handlers;
-using Battleship_Royal.Api.Mappings;
+﻿using Battleship_Royal.Api.Mappings;
 using Battleship_Royal.Data.DbContext;
 using Battleship_Royal.Data.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Battleship_Royal.Api.Handlers.Services.Interfaces;
 using Battleship_Royal.Api.Handlers.Services;
-using Battleship_Royal.Data.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis;
+using StackExchange.Redis.Extensions.Core.Abstractions;
+using StackExchange.Redis.Extensions.Newtonsoft;
+using Microsoft.Extensions.Options;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +42,37 @@ builder.Services.AddAutoMapper(typeof(Profiles).GetTypeInfo().Assembly, typeof(P
 builder.Services.AddTransient<ISaveGamesServices, SaveGamesServices>();
 builder.Services.AddTransient<ILoadGameFromTemporaryGames, LoadGameFromTemporaryGames>();
 builder.Services.AddTransient<IUserIdService, UserIdService>();
+builder.Services.AddTransient<IDeserializeService, DeserializeService>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
+builder.Services.Configure<RedisOptions>(builder.Configuration.GetSection("Redis"));
+
+builder.Services.AddSingleton<IGameCacheService, GameCacheService>(sp =>
+{
+    var options = sp.GetRequiredService<IOptions<RedisOptions>>().Value;
+    string connectionString = $"{options.Host}:{options.Port},connectTimeout={options.ConnectTimeout}";
+
+    return new GameCacheService(connectionString); 
+});
+
 
 var app = builder.Build();
 
@@ -52,6 +85,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

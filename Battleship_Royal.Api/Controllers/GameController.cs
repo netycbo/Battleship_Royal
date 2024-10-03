@@ -2,6 +2,7 @@
 using Battleship_Royal.Api.Requests;
 using Battleship_Royal.Api.Requests.Game;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Battleship_Royal.Api.Controllers
@@ -10,15 +11,16 @@ namespace Battleship_Royal.Api.Controllers
     [ApiController]
     public class GameController(IMediator mediator) : ControllerBase
     {
+        //[Authorize(Roles = "Player")]
         [HttpPost("prepare-game")]
-        public async Task<IActionResult> PrepareMatch([FromBody] PrepareGameRequest request)
+        public async Task<IActionResult> PrepareMatch([FromQuery] PrepareGameRequest request)
         {
             var result = await mediator.Send(request);
             return Ok(result);
         }
 
-        [HttpGet("rematch/{gameID}")]
-        public async Task<IActionResult>GetGameSettingsFromDb(RematchRequest request)
+        [HttpGet("")]
+        public async Task<IActionResult>GetGameSettingsFromRedis([FromQuery]RematchRequest request)
         {
             var result = await mediator.Send(request);
             return Ok(result);
