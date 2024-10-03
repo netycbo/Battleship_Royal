@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Battleship_Royal.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class First : Migration
+    public partial class firstAfterColaps : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,8 +30,9 @@ namespace Battleship_Royal.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Nickname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NumberOFGames = table.Column<int>(type: "int", nullable: false),
+                    IsInGame = table.Column<bool>(type: "bit", nullable: false),
                     JoinedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -54,21 +55,30 @@ namespace Battleship_Royal.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Games",
+                name: "ComputerPlayers",
                 columns: table => new
                 {
-                    GameId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DateOfGame = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Player1NickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Player2NickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WinnerNickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BeginningOfGame = table.Column<TimeOnly>(type: "time", nullable: false),
-                    EndingOfGame = table.Column<TimeOnly>(type: "time", nullable: false)
+                    NickName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Games", x => x.GameId);
+                    table.PrimaryKey("PK_ComputerPlayers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TemporaryGames",
+                columns: table => new
+                {
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    Player1Id = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Player2Id = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsSpeedGame = table.Column<bool>(type: "bit", nullable: false),
+                    Timer = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
                 });
 
             migrationBuilder.CreateTable(
@@ -177,6 +187,65 @@ namespace Battleship_Royal.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Games",
+                columns: table => new
+                {
+                    GameId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DateOfGame = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Player1NickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Player2NickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WinnerNickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BeginningOfGame = table.Column<TimeOnly>(type: "time", nullable: false),
+                    EndingOfGame = table.Column<TimeOnly>(type: "time", nullable: false),
+                    ComputerPlayerId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Games", x => x.GameId);
+                    table.ForeignKey(
+                        name: "FK_Games_ComputerPlayers_ComputerPlayerId",
+                        column: x => x.ComputerPlayerId,
+                        principalTable: "ComputerPlayers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApplicationUserGame",
+                columns: table => new
+                {
+                    GamesGameId = table.Column<int>(type: "int", nullable: false),
+                    PlayersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUserGame", x => new { x.GamesGameId, x.PlayersId });
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserGame_AspNetUsers_PlayersId",
+                        column: x => x.PlayersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserGame_Games_GamesGameId",
+                        column: x => x.GamesGameId,
+                        principalTable: "Games",
+                        principalColumn: "GameId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "ComputerPlayers",
+                columns: new[] { "Id", "NickName" },
+                values: new object[] { 1, "Red October" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserGame_PlayersId",
+                table: "ApplicationUserGame",
+                column: "PlayersId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -215,11 +284,19 @@ namespace Battleship_Royal.Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_ComputerPlayerId",
+                table: "Games",
+                column: "ComputerPlayerId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ApplicationUserGame");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -236,6 +313,9 @@ namespace Battleship_Royal.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "TemporaryGames");
+
+            migrationBuilder.DropTable(
                 name: "Games");
 
             migrationBuilder.DropTable(
@@ -243,6 +323,9 @@ namespace Battleship_Royal.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "ComputerPlayers");
         }
     }
 }

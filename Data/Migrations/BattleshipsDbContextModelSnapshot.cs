@@ -52,6 +52,13 @@ namespace Battleship_Royal.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ComputerPlayers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            NickName = "Red October"
+                        });
                 });
 
             modelBuilder.Entity("Battleship_Royal.Data.Entities.Game", b =>
@@ -173,26 +180,25 @@ namespace Battleship_Royal.Data.Migrations
 
             modelBuilder.Entity("Battleship_Royal.Data.Entities.TemporaryGame", b =>
                 {
-                    b.Property<int>("ComputerPlayerId")
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsSpeedGame")
                         .HasColumnType("bit");
 
                     b.Property<string>("Player1Id")
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Player2Id")
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Timer")
                         .HasColumnType("int");
-
-                    b.HasIndex("ComputerPlayerId");
-
-                    b.HasIndex("Player1Id");
-
-                    b.HasIndex("Player2Id");
 
                     b.ToTable("TemporaryGames");
                 });
@@ -354,29 +360,6 @@ namespace Battleship_Royal.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ComputerPlayer");
-                });
-
-            modelBuilder.Entity("Battleship_Royal.Data.Entities.TemporaryGame", b =>
-                {
-                    b.HasOne("Battleship_Royal.Data.Entities.ComputerPlayer", "ComputerPlayer")
-                        .WithMany()
-                        .HasForeignKey("ComputerPlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Battleship_Royal.Data.Entities.Identity.ApplicationUser", "Player1")
-                        .WithMany()
-                        .HasForeignKey("Player1Id");
-
-                    b.HasOne("Battleship_Royal.Data.Entities.Identity.ApplicationUser", "Player2")
-                        .WithMany()
-                        .HasForeignKey("Player2Id");
-
-                    b.Navigation("ComputerPlayer");
-
-                    b.Navigation("Player1");
-
-                    b.Navigation("Player2");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

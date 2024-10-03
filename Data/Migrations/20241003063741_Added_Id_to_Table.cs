@@ -5,25 +5,25 @@
 namespace Battleship_Royal.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class IsInGame_column : Migration
+    public partial class Added_Id_to_Table : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsInGame",
-                table: "Games",
-                type: "bit",
+            migrationBuilder.AddColumn<int>(
+                name: "Id",
+                table: "TemporaryGames",
+                type: "int",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsInGame",
-                table: "Games");
+                name: "Id",
+                table: "TemporaryGames");
         }
     }
 }
