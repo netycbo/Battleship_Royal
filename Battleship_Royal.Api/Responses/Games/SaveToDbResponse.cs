@@ -2,7 +2,7 @@
 
 namespace Battleship_Royal.Api.Responses.Games
 {
-    public class SaveToGamesDbResponse : BaseResponse<SaveToDbDto>
+    public class SaveToDbResponse : BaseResponse<SaveToDbDto>
     {
     }
 }

@@ -15,7 +15,6 @@ namespace Battleship_Royal.Api.Handlers
     {
         public async Task<RematchRersponse> Handle(RematchRequest request, CancellationToken cancellationToken)
         {
-            Console.WriteLine($"Received Game ID for rematch: {request.GameId}");
             var key = request.GameId;
             Console.WriteLine($"Trying to get game from Redis with key: {key}");
 
