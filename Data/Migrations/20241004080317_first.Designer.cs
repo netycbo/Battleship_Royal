@@ -4,6 +4,7 @@ using Battleship_Royal.Data.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Battleship_Royal.Data.Migrations
 {
     [DbContext(typeof(BattleshipsDbContext))]
-    partial class BattleshipsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241004080317_first")]
+    partial class first
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,13 +55,6 @@ namespace Battleship_Royal.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ComputerPlayers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            NickName = "Red October"
-                        });
                 });
 
             modelBuilder.Entity("Battleship_Royal.Data.Entities.Game", b =>
@@ -78,11 +74,11 @@ namespace Battleship_Royal.Data.Migrations
                     b.Property<TimeOnly>("EndingOfGame")
                         .HasColumnType("time");
 
-                    b.Property<string>("Player1Id")
+                    b.Property<string>("Player1NickName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Player2Id")
+                    b.Property<string>("Player2NickName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -200,20 +196,6 @@ namespace Battleship_Royal.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "8026a3d4-7d2f-46ce-8650-dfb01d570146",
-                            Name = "Player",
-                            NormalizedName = "PLAYER"
-                        },
-                        new
-                        {
-                            Id = "e44ed814-c750-47a5-9925-59d30f927365",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

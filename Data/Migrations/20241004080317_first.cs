@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Battleship_Royal.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class firstAfterColaps : Migration
+    public partial class first : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -65,20 +65,6 @@ namespace Battleship_Royal.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ComputerPlayers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TemporaryGames",
-                columns: table => new
-                {
-                    GameId = table.Column<int>(type: "int", nullable: false),
-                    Player1Id = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Player2Id = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsSpeedGame = table.Column<bool>(type: "bit", nullable: false),
-                    Timer = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
                 });
 
             migrationBuilder.CreateTable(
@@ -191,8 +177,7 @@ namespace Battleship_Royal.Data.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    GameId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GameId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DateOfGame = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Player1NickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Player2NickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -216,7 +201,7 @@ namespace Battleship_Royal.Data.Migrations
                 name: "ApplicationUserGame",
                 columns: table => new
                 {
-                    GamesGameId = table.Column<int>(type: "int", nullable: false),
+                    GamesGameId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PlayersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -235,11 +220,6 @@ namespace Battleship_Royal.Data.Migrations
                         principalColumn: "GameId",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.InsertData(
-                table: "ComputerPlayers",
-                columns: new[] { "Id", "NickName" },
-                values: new object[] { 1, "Red October" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ApplicationUserGame_PlayersId",
@@ -311,9 +291,6 @@ namespace Battleship_Royal.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "TemporaryGames");
 
             migrationBuilder.DropTable(
                 name: "Games");
