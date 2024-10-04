@@ -21,11 +21,8 @@ namespace Battleship_Royal.Api.Mappings
             CreateMap<ApplicationUser, NewUserDto>()
                 .ForMember(x => x.NickName, x => x.MapFrom(y=> y.UserName));
             CreateMap<PrepareGameRequest, PrepareGameDto>();
-            CreateMap<PrepareGameDto, TemporaryGame>()
-                .ForMember(dest => dest.Player1Id, opt => opt.MapFrom(src => src.Player1))
-                .ForMember(dest => dest.Player2Id, opt => opt.MapFrom(src => src.Player2));
-
-
+            CreateMap<SaveToDbRequest, SaveToDbDto>();
+            CreateMap<SaveToDbDto, Game>();
         }
 
     }
