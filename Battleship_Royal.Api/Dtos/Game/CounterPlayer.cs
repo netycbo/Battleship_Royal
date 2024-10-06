@@ -2,7 +2,7 @@
 {
     public class CounterPlayer
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int GameCount { get; set; }
     }
 }

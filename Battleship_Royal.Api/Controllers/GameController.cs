@@ -13,7 +13,7 @@ namespace Battleship_Royal.Api.Controllers
     {
         //[Authorize(Roles = "Player")]
         [HttpPost("prepare-game")]
-        public async Task<IActionResult> PrepareMatch([FromQuery] PrepareGameRequest request)
+        public async Task<IActionResult> PrepareMatch([FromBody] PrepareGameRequest request)
         {
             var result = await mediator.Send(request);
             return Ok(result);
@@ -26,14 +26,14 @@ namespace Battleship_Royal.Api.Controllers
             return Ok(result);
         }
         [HttpPost("save-To-Db")]
-        public async Task<IActionResult> SaveToDbGames([FromQuery] SaveToDbRequest request)
+        public async Task<IActionResult> SaveToDbGames([FromBody] SaveToDbRequest request)
         {
             var result = await mediator.Send(request);
             return Ok(result);
         }
         
-        [HttpGet("game-stats")]
-        public async Task<IActionResult> SaveToDbGames([FromQuery] GameStatsRequest request)
+        [HttpGet("player-stats")]
+        public async Task<IActionResult> SchowPlayerStats([FromQuery] GameStatsRequest request)
         {
             var result = await mediator.Send(request);
             return Ok(result);

@@ -23,6 +23,7 @@ namespace Battleship_Royal.Api.Mappings
             CreateMap<PrepareGameRequest, PrepareGameDto>();
             CreateMap<SaveToDbRequest, SaveToDbDto>();
             CreateMap<SaveToDbDto, Game>();
+            CreateMap<PrepareGameRequest, SaveToDbWithComputerPlayerDto>();
         }
 
     }

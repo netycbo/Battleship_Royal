@@ -18,6 +18,6 @@ namespace Battleship_Royal.Data.Entities
 
         public TimeOnly EndingOfGame { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
         public List<ApplicationUser> Players { get; set; } = new List<ApplicationUser>();
-        public ComputerPlayer ComputerPlayer { get; set; }
+        public ComputerPlayer ComputerPlayer { get; set; } 
     }
 }
