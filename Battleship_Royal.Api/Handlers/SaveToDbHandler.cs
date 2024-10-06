@@ -8,34 +8,41 @@ using MediatR;
 
 namespace Battleship_Royal.Api.Handlers
 {
-    public class SaveToDbHandler(BattleshipsDbContext context, IMapper mapper, ISaveGamesServices saveGames)
+    public class SaveToDbHandler(IMapper mapper, ISaveGamesServices saveGames)
                                 : IRequestHandler<SaveToDbRequest, SaveToDbResponse>
     {
         public async Task<SaveToDbResponse> Handle(SaveToDbRequest request, CancellationToken cancellationToken)
         {
+            SaveToDbDto readyToSave = null;
+
             try
             {
                 if (request.GameId.Any() && request.WinnerId.Any() && request.Player1Id.Any() && request.Player2Id.Any() &&
                     request.DateOfGame != default(DateTime) && request.BeginningOfGame != default(TimeOnly) && request.EndingOfGame != default(TimeOnly))
                 {
-                    var readyToSave = mapper.Map<SaveToDbDto>(request);
-                    await saveGames.SaveToDbAsync(readyToSave);
-                    return new SaveToDbResponse
+                    if (request.Player2Id == "1")
                     {
-                        Data = readyToSave
-                    };
+                        var readyToSaveWithComputerPlayer = mapper.Map<SaveToDbWithComputerPlayerDto>(request);
+                        await saveGames.SaveToDbWithComputerPlayerAsync(readyToSaveWithComputerPlayer);
+                        readyToSave = (SaveToDbDto?)readyToSaveWithComputerPlayer;
+                    }
+                    else
+                    {
+                        readyToSave = mapper.Map<SaveToDbDto>(request);
+                        await saveGames.SaveToDbAsync(readyToSave);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Missing data in request");
+                Console.WriteLine("Missing data in request: " + ex.Message);
             }
+
             return new SaveToDbResponse
             {
-                Data = null
+                Data = readyToSave
             };
-
-            
         }
+
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Battleship_Royal.Api.Handlers
 {
-    public class NewUserRegistrationHandler(IMapper mapper, IMediator mediator, UserManager<ApplicationUser> userManager) : IRequestHandler<NewUserRegistrationRequest, NewUserRegistrationResponse>
+    public class NewUserRegistrationHandler(IMapper mapper, UserManager<ApplicationUser> userManager) : IRequestHandler<NewUserRegistrationRequest, NewUserRegistrationResponse>
     {
         public async Task<NewUserRegistrationResponse> Handle(NewUserRegistrationRequest request, CancellationToken cancellationToken)
         {

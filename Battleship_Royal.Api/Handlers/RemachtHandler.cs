@@ -27,7 +27,7 @@ namespace Battleship_Royal.Api.Handlers
 
             Console.WriteLine($"Temporary game data from Redis: {temporaryGameFromRedis}");
 
-            var prepareGame = JsonSerializer.Deserialize<PrepareGameDto>(temporaryGameFromRedis);
+            var prepareGame = deserializeService.Deserialize<PrepareGameDto>(temporaryGameFromRedis);
             if (prepareGame == null)
             {
                 throw new Exception("PrepareGame is null");

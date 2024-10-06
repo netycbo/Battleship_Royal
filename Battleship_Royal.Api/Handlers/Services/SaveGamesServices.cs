@@ -17,6 +17,12 @@ namespace Battleship_Royal.Api.Handlers.Services
             await context.SaveChangesAsync();
 
         }
-       
+
+        public async Task SaveToDbWithComputerPlayerAsync(SaveToDbWithComputerPlayerDto SaveToDbWithComputerPlayerDto)
+        {
+            var game = mapper.Map<Game>(SaveToDbWithComputerPlayerDto);
+            context.Games.Add(game);
+            await context.SaveChangesAsync();
+        }
     }
 }

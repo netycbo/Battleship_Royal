@@ -40,7 +40,6 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Progr
 builder.Services.AddAutoMapper(typeof(Profiles).GetTypeInfo().Assembly, typeof(Profiles).Assembly);
 
 builder.Services.AddTransient<ISaveGamesServices, SaveGamesServices>();
-builder.Services.AddTransient<ILoadGameFromTemporaryGames, LoadGameFromTemporaryGames>();
 builder.Services.AddTransient<IUserIdService, UserIdService>();
 builder.Services.AddTransient<IDeserializeService, DeserializeService>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();

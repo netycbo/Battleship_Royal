@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Battleship_Royal.Api.Handlers
 {
-    public class PrepareGameHandler(IMapper mapper, ISaveGamesServices saveGamesServices, IUserIdService idService,
+    public class PrepareGameHandler(IMapper mapper, IUserIdService idService,
             UserManager<ApplicationUser> userManager, BattleshipsDbContext context, IGameCacheService gameCacheService)
         : IRequestHandler<PrepareGameRequest, PrepareGameResponse>
     {
@@ -34,8 +34,7 @@ namespace Battleship_Royal.Api.Handlers
                     throw new Exception($"Player1 with ID {player1Id} not found.");
                 }
 
-                // Debugging: ensure player1 object is properly populated
-                if (player1.IsInGame == null)
+                if (player1.IsInGame)
                 {
                     throw new Exception($"IsInGame property is null for player1: {player1.UserName}.");
                 }
@@ -50,7 +49,7 @@ namespace Battleship_Royal.Api.Handlers
                 var player2Id = idService.GetUserId();
                 if (player2Id == "-1")
                 {
-                    throw new ArgumentException("player1 is not autenticated");
+                    player2Id = "1";
                 }
                 var player2 = await userManager.FindByIdAsync(player2Id);
                 if (player2.IsInGame)
@@ -69,7 +68,6 @@ namespace Battleship_Royal.Api.Handlers
 
                 Console.WriteLine($"Computer player found: {computerPlayer.NickName}");
 
-                // Przypisz NickName komputerowego gracza do Player2 w żądaniu
                 request.Player2 = computerPlayer.NickName;
             }
             if(request.IsSpeedGame)

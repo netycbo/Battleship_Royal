@@ -1,9 +1,11 @@
 ﻿using System.Security.Claims;
+using Azure.Core;
 using Battleship_Royal.Api.Handlers.Services.Interfaces;
+using Battleship_Royal.Data.DbContext;
 
 namespace Battleship_Royal.Api.Handlers.Services
 {
-    public class UserIdService(IHttpContextAccessor accessor) : IUserIdService
+    public class UserIdService(IHttpContextAccessor accessor, BattleshipsDbContext context ) : IUserIdService
     {
         public string GetUserId()
         {
@@ -26,6 +28,15 @@ namespace Battleship_Royal.Api.Handlers.Services
             }
 
             return userClaims.Value;
+        }
+
+        public string GetUserNickName(string userId)
+        {
+            string nickName = context.Users
+                   .Where(u => u.Id == userId)
+                   .Select(u => u.NickName)
+                   .FirstOrDefault();
+            return nickName;
         }
     }
 }
