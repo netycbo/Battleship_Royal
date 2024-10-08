@@ -1,6 +1,6 @@
 ﻿namespace Battleship_Royal.GameLogic
 {
-    public class GameBoard
+    public class GameBoard : IGameBoard
     {
         private Cell[,] board;
         private List<Ship> ships;
@@ -49,7 +49,7 @@
         {
             if (board[row, col].IsHit)
             {
-                return false; 
+                return false;
             }
 
             board[row, col].IsHit = true;
@@ -60,31 +60,29 @@
 
                 if (hitShip != null && hitShip.IsSunk())
                 {
-                    
+
                     Console.WriteLine("Statek został zatopiony!");
                 }
 
                 return true;
             }
 
-            return false; 
+            return false;
         }
 
         private bool IsValidPlacement(int row, int col)
         {
-            // współrzędne są w obrębie planszy?
+
             if (row < 0 || row >= 10 || col < 0 || col >= 10)
             {
                 return false;
             }
 
-            // czy pole jest już zajęte
             if (board[row, col].HasShip)
             {
                 return false;
             }
 
-            // Sprawdź sąsiednie pola
             for (int i = -1; i <= 1; i++)
             {
                 for (int j = -1; j <= 1; j++)
