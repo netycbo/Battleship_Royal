@@ -36,25 +36,22 @@ namespace Battleship_Royal.Api.Handlers
 
                 if (player1.IsInGame)
                 {
-                    throw new Exception($"IsInGame property is null for player1: {player1.UserName}.");
+                    throw new Exception($"IsInGame property is null for player1 : {player1.UserName}.");
                 }
 
                 if (player1.IsInGame)
                 {
-                    throw new Exception($"Player1: {player1.UserName} is already in game.");
+                    throw new Exception($"Player1 : {player1.UserName} is already in game.");
                 }
             }
-            if (request.Player2 == null)
+            if (request.Player2 != null)
             {
                 var player2Id = idService.GetUserId();
-                if (player2Id == "-1")
-                {
-                    player2Id = "1";
-                }
+                
                 var player2 = await userManager.FindByIdAsync(player2Id);
                 if (player2.IsInGame)
                 {
-                    throw new Exception($"player1: {request.Player2} is allredy in game");
+                    throw new Exception($"player2 : {request.Player2} is allredy in game");
                 }
             }
             else
@@ -65,11 +62,11 @@ namespace Battleship_Royal.Api.Handlers
                 {
                     throw new Exception("No computer player found in the system.");
                 }
-
-                Console.WriteLine($"Computer player found: {computerPlayer.NickName}");
-
-                request.Player2 = computerPlayer.NickName;
+              
+                var difficulty = request.DifficultyLevel;
+                
             }
+
             if(request.IsSpeedGame)
             {
                 int timerMinutes = request.Timer;

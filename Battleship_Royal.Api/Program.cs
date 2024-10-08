@@ -12,6 +12,12 @@ using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using StackExchange.Redis.Extensions.Newtonsoft;
 using Microsoft.Extensions.Options;
+using Battleship_Royal.GameLogic;
+using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
+
+using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels;
+using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.Interfaces;
+using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +48,12 @@ builder.Services.AddAutoMapper(typeof(Profiles).GetTypeInfo().Assembly, typeof(P
 builder.Services.AddTransient<ISaveGamesServices, SaveGamesServices>();
 builder.Services.AddTransient<IUserIdService, UserIdService>();
 builder.Services.AddTransient<IDeserializeService, DeserializeService>();
+builder.Services.AddTransient<IGameBoard, GameBoard>();
+builder.Services.AddTransient<IDifficultyStrategy, EasyLevel>();
+builder.Services.AddTransient<IGenerateRandomCoordinates, GenerateRandomCoordinates>();
+builder.Services.AddTransient<IBfsAlgorithm, BfsAlgorithm>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
+builder.Services.AddSingleton<Random>();
 
 builder.Services.AddAuthentication(options =>
 {

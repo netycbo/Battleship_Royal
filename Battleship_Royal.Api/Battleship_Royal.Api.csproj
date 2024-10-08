@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Battleship_Royal.GameLogic\Battleship_Royal.GameLogic.csproj" />
     <ProjectReference Include="..\Data\Battleship_Royal.Data.csproj" />
   </ItemGroup>
 
