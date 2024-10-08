@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Battleship_Royal.Api.Dtos;
+using Battleship_Royal.Api.Handlers.Services.Interfaces;
 using Battleship_Royal.Api.Requests.Players;
 using Battleship_Royal.Api.Responses.Players;
 using Battleship_Royal.Data.Entities.Identity;
@@ -12,7 +13,8 @@ using System.Text;
 
 namespace Battleship_Royal.Api.Handlers
 {
-    public class LoginHandler(IMapper mapper, UserManager<ApplicationUser> userManager, IConfiguration configuration ) : IRequestHandler<LoginRequest, LoginResponse>
+    public class LoginHandler(IMapper mapper, UserManager<ApplicationUser> userManager, IConfiguration configuration, IGameCacheService gameCache ) 
+        : IRequestHandler<LoginRequest, LoginResponse>
     {
         public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
         {
@@ -21,7 +23,8 @@ namespace Battleship_Royal.Api.Handlers
           {
               throw new Exception("User not found");
           }
-          
+          var userId = userExist.Id;
+
           var correctPassword = await userManager.CheckPasswordAsync(userExist, request.Password);
           if (!correctPassword)
           {
@@ -31,9 +34,15 @@ namespace Battleship_Royal.Api.Handlers
 
             var token = await GenerateJwtToken(userExist, roles);
             
+            var redyToLogInn = mapper.Map<LoginDto>(userExist);
+
+            var sessionStarted = request.StartSession;
+
+            await gameCache.SaveSessionAsync(userId, sessionStarted);
+
           return new LoginResponse
           {
-              Data = mapper.Map<LoginDto>(userExist),
+              Data = redyToLogInn,
               Token = token
           };
           

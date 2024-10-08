@@ -40,5 +40,20 @@ namespace Battleship_Royal.Api.Handlers.Services
         {
             return await _database.KeyDeleteAsync(key);
         }
+        public async Task SaveSessionAsync(string key, object sessionData, TimeSpan? expiry = null)
+        {
+            string jsonData = JsonSerializer.Serialize(sessionData, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine($"Setting Key: {key}, Data: {jsonData}");
+            await _database.StringSetAsync(key, jsonData, expiry);
+        }
+
+        public async Task<string> GetSessionDataAsync<T>(string key)
+        {
+            var jsonData = await _database.StringGetAsync(key);
+            Console.WriteLine($"Setting Key: {key}, Data: {jsonData}");
+            if (jsonData.IsNullOrEmpty) return default;
+
+            return jsonData;
+        }
     }
 }

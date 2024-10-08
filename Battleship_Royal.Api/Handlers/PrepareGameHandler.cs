@@ -80,7 +80,7 @@ namespace Battleship_Royal.Api.Handlers
             }
 
             var prepareGameReady = mapper.Map<PrepareGameDto>(request);
-            var saveToRedis = gameCacheService.SetGameAsync(gameId,prepareGameReady);
+            gameCacheService.SetGameAsync(gameId,prepareGameReady);
 
             return new PrepareGameResponse
             {
