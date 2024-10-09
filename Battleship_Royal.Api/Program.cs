@@ -52,6 +52,8 @@ builder.Services.AddTransient<IGameBoard, GameBoard>();
 builder.Services.AddTransient<IDifficultyStrategy, EasyLevel>();
 builder.Services.AddTransient<IGenerateRandomCoordinates, GenerateRandomCoordinates>();
 builder.Services.AddTransient<IBfsAlgorithm, BfsAlgorithm>();
+builder.Services.AddScoped<IGenerateJwtToken , GenerateJwtToken>();
+builder.Services.AddScoped<IGenerateRefreshToken, GenerateRefreshToken>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddSingleton<Random>();
 

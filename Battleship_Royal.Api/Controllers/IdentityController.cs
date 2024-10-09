@@ -22,5 +22,11 @@ namespace Battleship_Royal.Api.Controllers
             var result = await mediator.Send(request);
             return Ok(result);
         }
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        {
+            var result = await mediator.Send(request);
+            return Ok(result);
+        }
     }
 }
