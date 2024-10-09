@@ -16,16 +16,12 @@ namespace Battleship_Royal.Api.Handlers
         public async Task<RematchRersponse> Handle(RematchRequest request, CancellationToken cancellationToken)
         {
             var key = request.GameId;
-            Console.WriteLine($"Trying to get game from Redis with key: {key}");
-
             var temporaryGameFromRedis = await gameCacheService.GetGameAsync<string>(key);
 
             if (temporaryGameFromRedis.IsNullOrEmpty())
             {
                 throw new Exception("TemporaryGame is null");
             }
-
-            Console.WriteLine($"Temporary game data from Redis: {temporaryGameFromRedis}");
 
             var prepareGame = deserializeService.Deserialize<PrepareGameDto>(temporaryGameFromRedis);
             if (prepareGame == null)

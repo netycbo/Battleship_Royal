@@ -66,7 +66,6 @@ namespace Battleship_Royal.Api.Handlers
                 var difficulty = request.DifficultyLevel;
                 
             }
-
             if(request.IsSpeedGame)
             {
                 int timerMinutes = request.Timer;
@@ -78,7 +77,6 @@ namespace Battleship_Royal.Api.Handlers
 
                 endTime = startTime.AddMinutes(timerMinutes);
             }
-
             var prepareGameReady = mapper.Map<PrepareGameDto>(request);
             gameCacheService.SetGameAsync(gameId,prepareGameReady);
 

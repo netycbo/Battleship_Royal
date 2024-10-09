@@ -14,7 +14,6 @@ namespace Battleship_Royal.Api.Handlers
         public async Task<SaveToDbResponse> Handle(SaveToDbRequest request, CancellationToken cancellationToken)
         {
             SaveToDbDto readyToSave = null;
-
             try
             {
                 if (request.GameId.Any() && request.WinnerId.Any() && request.Player1Id.Any() && request.Player2Id.Any() &&
@@ -35,7 +34,7 @@ namespace Battleship_Royal.Api.Handlers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Missing data in request: " + ex.Message);
+                Console.WriteLine($"Missing data in request: {ex.Message}");
             }
 
             return new SaveToDbResponse

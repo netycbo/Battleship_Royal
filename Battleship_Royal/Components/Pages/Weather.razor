@@ -1,64 +1,79 @@
 ﻿@page "/weather"
-@attribute [StreamRendering]
+@using System.ComponentModel.DataAnnotations
+@using Battleship_Royal.Api.Requests.Players
+@using Battleship_Royal.Api.Responses.Players
+@inject HttpClient Http
 
-<PageTitle>Weather</PageTitle>
+<h3>Rejestracja nowego użytkownika</h3>
 
-<h1>Weather</h1>
+<EditForm Model="@registrationRequest" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-<p>This component demonstrates showing data.</p>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="registrationRequest.Email" />
+        <ValidationMessage For="@(() => registrationRequest.Email)" />
+    </div>
 
-@if (forecasts == null)
+    <div class="mb-3">
+        <label for="password" class="form-label">Hasło</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="registrationRequest.Password" />
+        <ValidationMessage For="@(() => registrationRequest.Password)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Potwierdź hasło</label>
+        <InputText id="confirmPassword" type="password" class="form-control" @bind-Value="registrationRequest.ConfirmPassword" />
+        <ValidationMessage For="@(() => registrationRequest.ConfirmPassword)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="nickName" class="form-label">Nick</label>
+        <InputText id="nickName" class="form-control" @bind-Value="registrationRequest.NickName" />
+        <ValidationMessage For="@(() => registrationRequest.NickName)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zarejestruj się</button>
+</EditForm>
+
+@if (registrationResponse != null)
 {
-    <p><em>Loading...</em></p>
+    <div class="alert alert-success mt-3">
+        Użytkownik został pomyślnie zarejestrowany!
+    </div>
 }
-else
+
+@if (!string.IsNullOrEmpty(errorMessage))
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="alert alert-danger mt-3">
+        @errorMessage
+    </div>
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private NewUserRegistrationRequest registrationRequest = new NewUserRegistrationRequest();
+    private NewUserRegistrationResponse registrationResponse;
+    private string errorMessage;
 
-    protected override async Task OnInitializedAsync()
+    private async Task HandleValidSubmit()
     {
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        await Task.Delay(500);
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        try
         {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
-    }
-
-    private class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+            var response = await Http.PostAsJsonAsync("api/register", registrationRequest);
+            if (response.IsSuccessStatusCode)
+            {
+                registrationResponse = await response.Content.ReadFromJsonAsync<NewUserRegistrationResponse>();
+                errorMessage = null; // Clear any previous error messages
+            }
+            else
+            {
+                errorMessage = "Rejestracja nie powiodła się. Sprawdź dane.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Wystąpił błąd: {ex.Message}";
+        }
     }
 }
