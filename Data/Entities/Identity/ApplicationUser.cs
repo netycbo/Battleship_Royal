@@ -8,8 +8,6 @@ namespace Battleship_Royal.Data.Entities.Identity
         public int NumberOFGames { get; set; }
         public bool IsInGame { get; set; } = false;
         public DateTime JoinedDate { get; set; } = DateTime.Now;
-        public string RefreshToken { get; set; }
-        public DateTime RefreshTokenExpiryTime { get; set; }
         public List<Game> Games { get; set; } = new List<Game>();
     }
        

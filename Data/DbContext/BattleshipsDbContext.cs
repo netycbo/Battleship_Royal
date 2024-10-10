@@ -40,7 +40,7 @@ namespace Battleship_Royal.Data.DbContext
         }
 
         public DbSet<Game> Games { get; set; }
-        
+        public DbSet<Token> Tokens { get; set; }
         public DbSet<ComputerPlayer> ComputerPlayers { get; set; }
     }
    

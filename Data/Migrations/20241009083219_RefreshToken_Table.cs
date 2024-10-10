@@ -34,14 +34,14 @@ namespace Battleship_Royal.Data.Migrations
                 name: "RefreshToken",
                 table: "AspNetUsers",
                 type: "nvarchar(max)",
-                nullable: false,
+                nullable: true,
                 defaultValue: "");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "RefreshTokenExpiryTime",
                 table: "AspNetUsers",
                 type: "datetime2",
-                nullable: false,
+                nullable: true,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.InsertData(
