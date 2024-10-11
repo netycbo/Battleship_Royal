@@ -57,6 +57,18 @@ builder.Services.AddScoped<IGenerateRefreshToken, GenerateRefreshToken>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddSingleton<Random>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -96,7 +108,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAllOrigins");
 
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -10,16 +10,16 @@ namespace Battleship_Royal.Api.Requests.Players
     {
         [Required]
         [DataType(DataType.EmailAddress), EmailAddress]
-        public string Email { get; set; }
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-        [Required]
+        public string Email { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Hasło jest wymagane.")]
+        [StringLength(100, ErrorMessage = "Hasło musi mieć co najmniej {2} znaki.", MinimumLength = 6)]
+        public string Password { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Potwierdzenie hasła jest wymagane.")]
         [DataType(DataType.Password), Compare(nameof(Password), ErrorMessage = "Passwords don't match")]
-        public string ConfirmPassword { get; set; }
-        [Required]
+        public string ConfirmPassword { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Nick jest wymagany.")]
         [NoSpecialCharacters]
-        public string NickName { get; set; }
+        public string NickName { get; set; } = string.Empty;
         
     }
 }

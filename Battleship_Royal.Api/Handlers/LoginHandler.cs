@@ -4,6 +4,8 @@ using Battleship_Royal.Api.Handlers.Services;
 using Battleship_Royal.Api.Handlers.Services.Interfaces;
 using Battleship_Royal.Api.Requests.Players;
 using Battleship_Royal.Api.Responses.Players;
+using Battleship_Royal.Data.DbContext;
+using Battleship_Royal.Data.Entities;
 using Battleship_Royal.Data.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +16,7 @@ using System.Text;
 
 namespace Battleship_Royal.Api.Handlers
 {
-    public class LoginHandler(IMapper mapper, UserManager<ApplicationUser> userManager, IConfiguration configuration, IGenerateRefreshToken generateRefreshToken, IGenerateJwtToken generateJwtToken)
+    public class LoginHandler(IMapper mapper,BattleshipsDbContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration, IGenerateRefreshToken generateRefreshToken, IGenerateJwtToken generateJwtToken)
         : IRequestHandler<LoginRequest, LoginResponse>
     {
         public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
@@ -22,23 +24,29 @@ namespace Battleship_Royal.Api.Handlers
             var userExist = await userManager.FindByEmailAsync(request.Email);
             if (userExist == null)
             {
-                throw new Exception("User not found");
+                return new LoginResponse { Error = "User not found" };
             }
 
             var correctPassword = await userManager.CheckPasswordAsync(userExist, request.Password);
             if (!correctPassword)
             {
-                throw new Exception("Wrong password");
+                return new LoginResponse { Error = "Wrong password" };
             }
             var roles = await userManager.GetRolesAsync(userExist);
 
             var token = await generateJwtToken.GenerateToken(userExist, roles);
             var refreshToken = generateRefreshToken.Generate();
-            userExist.RefreshToken = refreshToken;
-            await userManager.UpdateAsync(userExist);
+            var userId = userExist.Id;
+            
+            var saveTokens = new Token
+            {
+                UserId = userId,
+                RefreshToken = refreshToken
+            };
 
+            await context.Tokens.AddAsync(saveTokens);
+            
             var redyToLogInn = mapper.Map<LoginDto>(userExist);
-
             return new LoginResponse
             {
                 Data = redyToLogInn,

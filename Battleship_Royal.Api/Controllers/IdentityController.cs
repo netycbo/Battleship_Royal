@@ -1,6 +1,6 @@
 ﻿using Battleship_Royal.Api.Requests.Players;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace Battleship_Royal.Api.Controllers

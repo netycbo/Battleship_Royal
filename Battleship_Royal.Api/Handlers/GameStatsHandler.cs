@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
+
 namespace Battleship_Royal.Api.Handlers
 {
     public class GameStatsHandler(BattleshipsDbContext context, IUserIdService idService ) : IRequestHandler<GameStatsRequest, GameStatsResponse>

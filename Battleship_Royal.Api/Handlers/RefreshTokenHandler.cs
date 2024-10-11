@@ -12,22 +12,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Battleship_Royal.Api.Handlers
 {
-    public class RefreshTokenHandler(IMapper mapper, UserManager<ApplicationUser> userManager, IGenerateJwtToken generateJwtToken, IGenerateRefreshToken generateRefreshToken) 
+    public class RefreshTokenHandler(IMapper mapper, BattleshipsDbContext context, UserManager<ApplicationUser> userManager, IGenerateJwtToken generateJwtToken, IGenerateRefreshToken generateRefreshToken)
         : IRequestHandler<RefreshTokenRequest, RefreshTokenResponse>
     {
         public async Task<RefreshTokenResponse> Handle(RefreshTokenRequest request, CancellationToken cancellationToken)
         {
-            var user = await userManager.Users.SingleOrDefaultAsync(x=>x.RefreshToken == request.RefreshToken);
+            var user = await userManager.FindByIdAsync(request.UserId);
+            var userToken = await context.Tokens.SingleOrDefaultAsync(x=>x.RefreshToken == request.RefreshToken);
 
-            if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+            if (userToken == null || userToken.RefreshTokenExpiryTime < DateTime.UtcNow)
             {
                 Console.WriteLine("Invalid refresh token");
             }
             var roles = await userManager.GetRolesAsync(user);
             var newJwtToken = await generateJwtToken.GenerateToken(user, roles);
             var newRefreshToken = generateRefreshToken.Generate();
-            user.RefreshToken = newRefreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(5);
+            userToken.RefreshToken = newRefreshToken;
+            userToken.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(5);
             await userManager.UpdateAsync(user);
 
             return new RefreshTokenResponse

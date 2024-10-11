@@ -6,5 +6,6 @@ namespace Battleship_Royal.Api.Requests.Players
     public class RefreshTokenRequest : IRequest<RefreshTokenResponse>
     {
         public string RefreshToken { get; set; }
+        public string UserId { get; set; }
     }
 }
