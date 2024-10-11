@@ -1,7 +1,7 @@
 ﻿
 namespace Battleship_Royal.Data.Services.HttpClientFactory
 {
-    public class CustomHttpClientFactory(IHttpClientFactory httpClientFactory) 
+    public class CustomHttpClientFactory(IHttpClientFactory httpClientFactory) : ICustomHttpClientFactory
     {
         public HttpClient CreateClient(string endpoint)
         {
@@ -10,11 +10,11 @@ namespace Battleship_Royal.Data.Services.HttpClientFactory
             switch (endpoint.ToLower())
             {
                 case "register":
-                    client.BaseAddress = new Uri("");
+                    client.BaseAddress = new Uri("https://localhost:7063/api/Identity/register");
                     break;
 
                 case "login":
-                    client.BaseAddress = new Uri("https://yourapi.com/api/auth/");
+                    client.BaseAddress = new Uri("https://localhost:7063/api/Identity/login");
                     break;
 
                 case "refresh-token":

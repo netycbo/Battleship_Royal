@@ -1,18 +1,16 @@
 ﻿using Battleship_Royal.Api.Requests.Game;
 using Battleship_Royal.Api.Responses.Games;
-using Battleship_Royal.Data.Entities;
 using Battleship_Royal.Data.Services.GameServices.Interfaces;
 using Battleship_Royal.Data.Services.HttpClientFactory;
-using System.Net.Http.Json;
 
 namespace Battleship_Royal.Data.Services.GameServices
 {
-    public class GameServices(CustomHttpClientFactory clientFactory) : IGameServices
+    public class GameServices(ICustomHttpClientFactory clientFactory) : IGameServices
     {
         public async Task<GameStatsResponse> GameStatsAsync(GameStatsRequest request)
         {
             var client = clientFactory.CreateClient("player-stats");
-            var response = await client.PostAsJsonAsync<GameStatsRequest>("player-stats", request);
+            var response = await client.PostAsJsonAsync<GameStatsRequest>("", request);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<GameStatsResponse>();
@@ -21,7 +19,7 @@ namespace Battleship_Royal.Data.Services.GameServices
         public async Task<RematchRersponse> GetGameSettingsFromRedisAsync(RematchRequest request)
         {
             var client = clientFactory.CreateClient("rematch");
-            var response = await client.PostAsJsonAsync<RematchRequest>("rematch", request);
+            var response = await client.PostAsJsonAsync<RematchRequest>("", request);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<RematchRersponse>();
@@ -30,7 +28,7 @@ namespace Battleship_Royal.Data.Services.GameServices
         public async Task<PrepareGameResponse> PrepareMatchAsync(PrepareGameRequest request)
         {
             var client = clientFactory.CreateClient("prepare-match");
-            var response = await client.PostAsJsonAsync<PrepareGameRequest>("prepare-match", request);
+            var response = await client.PostAsJsonAsync<PrepareGameRequest>("", request);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<PrepareGameResponse>();
@@ -39,7 +37,7 @@ namespace Battleship_Royal.Data.Services.GameServices
         public async Task<SaveToDbResponse> SaveToDbAsync(SaveToDbRequest request)
         {
             var client = clientFactory.CreateClient("save-To-Db");
-            var response = await client.PostAsJsonAsync<SaveToDbRequest>("save-To-Db", request);
+            var response = await client.PostAsJsonAsync<SaveToDbRequest>("", request);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<SaveToDbResponse>();

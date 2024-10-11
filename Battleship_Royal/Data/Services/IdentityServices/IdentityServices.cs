@@ -5,12 +5,12 @@ using Battleship_Royal.Data.Services.IdentityServices.Interfaces;
 
 namespace Battleship_Royal.Data.Services.IdentityServices
 {
-    public class IdentityServices(CustomHttpClientFactory clientFactory) : IIdentityServices
+    public class IdentityServices(ICustomHttpClientFactory clientFactory) : IIdentityServices
     {
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
             var client = clientFactory.CreateClient("login");
-            var response = await client.PostAsJsonAsync("login", request);
+            var response = await client.PostAsJsonAsync("", request);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<LoginResponse>();
@@ -19,7 +19,7 @@ namespace Battleship_Royal.Data.Services.IdentityServices
         public async Task<RefreshTokenResponse> RefreshToken(RefreshTokenRequest request)
         {
             var client = clientFactory.CreateClient("refresh-token");
-            var response = await client.PostAsJsonAsync("refresh-token", request);
+            var response = await client.PostAsJsonAsync("", request);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<RefreshTokenResponse>();
@@ -28,7 +28,7 @@ namespace Battleship_Royal.Data.Services.IdentityServices
         public async Task<NewUserRegistrationResponse> RegisterAsync(NewUserRegistrationRequest request)
         {
             var client = clientFactory.CreateClient("register");
-            var response = await client.PostAsJsonAsync("register", request);
+            var response = await client.PostAsJsonAsync("", request);
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<NewUserRegistrationResponse>();
