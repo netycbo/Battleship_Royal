@@ -1,0 +1,68 @@
+﻿@page "/login"
+@inject ICustomHttpClientFactory Http
+
+
+<h1>Login Page</h1>
+
+<EditForm Model="loginRequest" OnValidSubmit="HandleValidSubmit" formname="loginRequest">
+    <DataAnnotationsValidator> </DataAnnotationsValidator>
+    <ValidationSummary> </ValidationSummary>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText class="form-control"
+                   @bind-Value="loginRequest.Email" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Hasło</label>
+        <InputText type="password" class="form-control" @bind-Value="loginRequest.Password" />
+    </div>
+
+    <div class="form-group">
+        <label for="nickName" class="form-label">Nick</label>
+        <InputText class="form-control" @bind-Value="loginRequest.NickName" />
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zaloguj się</button>
+</EditForm>
+
+@if (errorMessage != null)
+{
+<div class="alert alert-danger mt-3">
+    @loginResponse.Error
+    </div>
+}
+
+@code {
+    [SupplyParameterFromForm]
+    public LoginRequest loginRequest { get; set; } = new LoginRequest();
+    public LoginResponse? loginResponse { get; set; }
+    private string? errorMessage;
+
+    public async Task HandleValidSubmit()
+    {
+        try
+        {
+            loginRequest.StartSession = TimeOnly.FromDateTime(DateTime.Now);
+            var client = Http.CreateClient("login");
+            var response = await client.PostAsJsonAsync("login", loginRequest);
+            if (response.IsSuccessStatusCode)
+            {
+                loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                errorMessage = loginResponse.Error;
+                errorMessage = null;
+            }
+            else
+            {
+                errorMessage = "Login failed";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+
+    }
+}
