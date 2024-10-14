@@ -49,3 +49,56 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+.icon {
+    margin-left: -8px !important;
+    vertical-align: middle;
+}
+.parent {
+    display: flex; /* Use flexbox layout */
+    flex-direction: column; /* Stack items vertically */
+    margin: 20px; /* Add margin around the parent container */
+    background-color: #258cfb; /* Match the navbar color */
+    padding: 20px; /* Optional: Add some padding */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    color: white; /* Change text color to white for better contrast */
+}
+
+.div1, .div2 {
+    width: 100%; /* Make these divs take full width */
+    border: 1px solid black;  
+    padding: 20px; /* Padding inside each div */
+    margin-bottom: 10px; /* Space below the first two divs */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    text-align: center; /* Center text within div */
+}
+
+.divs-row {
+    width: 100%;
+    display: flex; /* Use flexbox for rows */
+    justify-content: space-between; /* Space between items */
+    margin-bottom: 10px; /* Space below each row */
+    border: 1px solid black;
+}
+
+div[class^="div"] {
+    /*border: 1px solid black;  */
+    padding: 20px; /* Padding inside each div */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    text-align: center; /* Center text within div */
+    flex: 1 0 30%; /* Allow 3 divs in a row */
+    margin: 5px; /* Margin around each div for spacing */
+}
+
+/* Ensure divs are responsive */
+@media (max-width: 800px) {
+    div[class^="div"] {
+        flex: 1 0 45%; /* Adjust to 2 divs in a row on smaller screens */
+    }
+}
+
+@media (max-width: 500px) {
+    div[class^="div"] {
+        flex: 1 0 100%; /* Adjust to 1 div in a row on very small screens */
+    }
+}
+
