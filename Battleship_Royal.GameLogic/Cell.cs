@@ -5,6 +5,7 @@
         public bool HasShip { get; set; } = false;
         public bool IsHit { get; set; } = false;
         public bool IsSunk { get; set; } = false;
+        public Ship? OccupyingShip { get; set; }
 
 
     }

@@ -17,26 +17,21 @@
             }
         }
 
-        public void PlaceShip(int startRow, int startCol, int length, bool isVertical)
+        public void PlaceShip(List<(int Row, int Col)> coordinates)
         {
             List<Cell> segments = new List<Cell>();
 
-            for (int i = 0; i < length; i++)
+            foreach (var (row, col) in coordinates)
             {
-                int row = isVertical ? startRow + i : startRow;
-                int col = isVertical ? startCol : startCol + i;
+                if (!IsValidPlacement(row, col))
+                {
+                    throw new Exception($"Invalid placement at ({row}, {col}).");
+                }
 
-                if (IsValidPlacement(row, col))
-                {
-                    segments.Add(board[row, col]);
-                }
-                else
-                {
-                    throw new Exception("Invalid placement.");
-                }
+                segments.Add(board[row, col]);
             }
 
-            Ship newShip = new Ship(segments);
+            Ship newShip = new Ship(segments, coordinates);
             ships.Add(newShip);
 
             foreach (var segment in segments)
@@ -44,6 +39,7 @@
                 segment.HasShip = true;
             }
         }
+
 
         public bool Attack(int row, int col)
         {
@@ -72,30 +68,11 @@
 
         private bool IsValidPlacement(int row, int col)
         {
-
-            if (row < 0 || row >= 10 || col < 0 || col >= 10)
+            if (row < 0 || row >= 10 || col < 0 || col >= 10 || board[row, col].HasShip)
             {
                 return false;
             }
 
-            if (board[row, col].HasShip)
-            {
-                return false;
-            }
-
-            for (int i = -1; i <= 1; i++)
-            {
-                for (int j = -1; j <= 1; j++)
-                {
-                    if (row + i >= 0 && row + i < 10 && col + j >= 0 && col + j < 10)
-                    {
-                        if (board[row + i, col + j].HasShip)
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
             return true;
         }
     }
