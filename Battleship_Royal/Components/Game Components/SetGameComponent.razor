@@ -1,0 +1,87 @@
+﻿@page "/setgame"
+@using Battleship_Royal.GameLogic
+
+<h3>Set Your Ships</h3>
+
+<ShipSelector OnShipTypeSelected="OnShipTypeSelected" />
+
+<div class="game-board">
+    @for (int row = 0; row < 10; row++)
+    {
+        <div class="board-row">
+            @for (int col = 0; col < 10; col++)
+            {
+                var cell = new Cell();
+                <div class="cell @(cell.HasShip ? "ship" : "") @(cell.IsHit ? "hit" : "")" 
+                     @onclick="() => OnCellClick(row, col)">
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="error-message">@errorMessage</div>
+}
+
+@code {
+    [Parameter]
+    public GameBoard GameBoard { get; set; } = new GameBoard();
+    private int shipLength;
+    private Cell Cell { get; set; }
+    private List<(int Row, int Col)> shipCoordinates = new List<(int Row, int Col)>();
+    private string? errorMessage;
+
+    protected override void OnInitialized()
+    {
+        GameBoard = new GameBoard();
+    }
+
+    public void OnShipTypeSelected(int length)
+    {
+        // Set the ship length based on the selected type
+        shipLength = length;
+
+        // Reset the coordinates for the new ship placement
+        shipCoordinates.Clear();
+        errorMessage = null; // Reset any previous error messages
+    }
+
+    private void OnCellClick(int row, int col)
+    {
+        if (shipLength == 0) return; // Only proceed if a ship type is selected
+
+        // Check if the cell is already occupied
+        if (Cell.HasShip)
+        {
+            errorMessage = "This cell is already occupied. Choose another cell.";
+            StateHasChanged(); // Refresh the UI to show the error
+            return;
+        }
+
+        // Add the clicked cell to the ship coordinates
+        shipCoordinates.Add((row, col));
+
+        // If the user has clicked enough times to place the ship
+        if (shipCoordinates.Count == shipLength)
+        {
+            try
+            {
+                GameBoard.PlaceShip(shipCoordinates);
+                errorMessage = null; // Reset any previous error messages
+                shipCoordinates.Clear(); // Clear coordinates for next ship
+                StateHasChanged(); // Refresh the UI to show the updated board
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message; // Show the error message
+            }
+        }
+    }
+    public void SetShipLength(int length)
+    {
+        shipLength = length;
+        shipCoordinates.Clear(); // Clear any previous selections
+    }
+}
