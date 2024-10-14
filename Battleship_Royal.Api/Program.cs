@@ -18,6 +18,8 @@ using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.Interfaces;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -96,7 +98,8 @@ builder.Services.AddSingleton<IGameCacheService, GameCacheService>(sp =>
 
     return new GameCacheService(connectionString); 
 });
-
+builder.Services.AddControllers()
+ .AddNewtonsoftJson();
 
 var app = builder.Build();
 

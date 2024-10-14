@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleship_Royal.Data", "Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleship_Royal.Api", "Battleship_Royal.Api\Battleship_Royal.Api.csproj", "{C488B2B2-28AF-4AA3-B0EF-019EFC04245D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleship_Royal.GameLogic", "Battleship_Royal.GameLogic\Battleship_Royal.GameLogic.csproj", "{DCBB2744-0827-424A-AC36-799946E56ECE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Battleship_Royal.GameLogic", "Battleship_Royal.GameLogic\Battleship_Royal.GameLogic.csproj", "{DCBB2744-0827-424A-AC36-799946E56ECE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

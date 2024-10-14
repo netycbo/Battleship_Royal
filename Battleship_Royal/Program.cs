@@ -1,19 +1,30 @@
+using Battleship_Royal.Api.Handlers.Services.Interfaces;
+using Battleship_Royal.Api.Handlers.Services;
 using Battleship_Royal.Components;
 using Battleship_Royal.Data.Services.GameServices;
 using Battleship_Royal.Data.Services.GameServices.Interfaces;
 using Battleship_Royal.Data.Services.HttpClientFactory;
 using Battleship_Royal.Data.Services.IdentityServices;
 using Battleship_Royal.Data.Services.IdentityServices.Interfaces;
+using Battleship_Royal.Api.Mappings;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddHttpClient();
-builder.Services.AddScoped<CustomHttpClientFactory>();
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpClient("", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7063/");
+});
+builder.Services.AddTransient<ICustomHttpClientFactory, CustomHttpClientFactory>();
 builder.Services.AddTransient<IGameServices, GameServices>();
 builder.Services.AddTransient<IIdentityServices, IdentityServices>();
+builder.Services.AddTransient<IDeserializeService, DeserializeService>();
+builder.Services.AddAutoMapper(typeof(Profiles).GetTypeInfo().Assembly, typeof(Profiles).Assembly);
 
 var app = builder.Build();
 
