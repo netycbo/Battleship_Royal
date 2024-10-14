@@ -10,10 +10,19 @@ namespace Battleship_Royal.Data.Services.GameServices
         public async Task<GameStatsResponse> GameStatsAsync(GameStatsRequest request)
         {
             var client = clientFactory.CreateClient("player-stats");
-            var response = await client.PostAsJsonAsync<GameStatsRequest>("", request);
+            var query = $"?PlayerId={Uri.EscapeDataString(request.PlayerId)}";
+            var response = await client.GetAsync(query);
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<GameStatsResponse>();
+            // Deserialize the JSON response into GameStatsResponse
+            var gameStatsResponse = await response.Content.ReadFromJsonAsync<GameStatsResponse>();
+
+            if (gameStatsResponse == null)
+            {
+                throw new InvalidOperationException("Failed to deserialize the response.");
+            }
+
+            return gameStatsResponse;
         }
 
         public async Task<RematchRersponse> GetGameSettingsFromRedisAsync(RematchRequest request)

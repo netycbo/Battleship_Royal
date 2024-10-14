@@ -21,7 +21,7 @@ namespace Battleship_Royal.Data.Services.HttpClientFactory
                     client.BaseAddress = new Uri("https://yourapi.com/api/auth/");
                     break;
                 case "player-stats":
-                    client.BaseAddress = new Uri("https://yourapi.com/api/");
+                    client.BaseAddress = new Uri("https://localhost:7063/api/Game/player-stats");
                     break;
                 case "rematch":
                     client.BaseAddress = new Uri("https://yourapi.com/api/");
