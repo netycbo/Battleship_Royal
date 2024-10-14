@@ -1,0 +1,117 @@
+﻿@page "/stats"
+@using AutoMapper
+@using Battleship_Royal.Api.Dtos.Game
+@using Newtonsoft.Json
+@inject IMapper Mapper
+
+@inject ICustomHttpClientFactory Http
+
+<div class="parent">
+    <div class="div1">
+        <h1>Statistics</h1>
+        <p>Player NickName: @GameStats?.PlayerName</p>
+    </div>
+    <div class="div2" >
+        <p>Hours of Play: @GameStats?.HoursOfPlay</p>
+    </div>
+    <div class="divs-row">
+    <div class="div3" >
+            <p>Quickest Win: @GameStats.QuickestWinInMinutes </p>
+    </div>
+        <div class="div4">
+            <p>Number of Wins:@GameStats?.NumbersOfWins</p>
+    </div>
+    <div class="div5">
+            <p>Number of Games: @GameStats?.NumbersOfGames</p>
+    </div>
+    </div>
+    <div class="divs-row">
+    <div class="div6">
+            <p>Number of Losses: @GameStats?.NumbersOfLosses</p>
+    </div>
+    <div class="div7">
+            <p>Games with Most Frequent Player: @GameStats?.MostGamesWithPlayer</p>
+    </div>
+    <div class="div8">
+            <p>Games with That Player: @GameStats?.NumbersOfGamesWithThatPlayer</p>
+    </div>
+    </div>
+</div>
+
+@code {
+    public GameStatsRequest? Request { get; set; } = new GameStatsRequest();
+    public GameStatsResponse? Response { get; set; }
+    public GameStatsDto? GameStats { get; set; } = new GameStatsDto();
+
+    private readonly string playerId = "7549f63e-d1b2-4f8f-bd04-5ea3ffc8b3ad";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (Request == null)
+            {
+                Request = new GameStatsRequest();
+            }
+
+            Request.PlayerId = playerId;
+
+            await LoadGameStats();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error during initialization: {ex.Message}");
+        }
+    }
+
+    private async Task LoadGameStats()
+    {
+        try
+        {
+            var client = Http.CreateClient("player-stats");
+            if (client == null)
+            {
+                throw new InvalidOperationException("Client is null");
+            }
+
+            var query = $"player-stats?PlayerId={Uri.EscapeDataString(Request.PlayerId)}";
+
+            var response = await client.GetAsync(query);
+            GameStatsResponse responseObject = null;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
+                responseObject = JsonConvert.DeserializeObject<GameStatsResponse>(content);
+
+                if (responseObject == null || responseObject.Data == null)
+                {
+                    throw new InvalidOperationException("Deserialization failed: responseObject was null.");
+                }
+                GameStats = Mapper.Map<GameStatsDto>(responseObject.Data);
+                StateHasChanged();
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new InvalidOperationException($"Failed to load game stats. Status code: {response.StatusCode}");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.Error.WriteLine($"HTTP request error: {ex.Message}");
+            throw;
+        }
+        catch (JsonException ex)
+        {
+            Console.Error.WriteLine($"JSON deserialization error: {ex.Message}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Unexpected error: {ex.Message}");
+            throw;
+        }
+    }
+}
