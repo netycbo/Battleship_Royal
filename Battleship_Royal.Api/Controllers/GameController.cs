@@ -33,8 +33,12 @@ namespace Battleship_Royal.Api.Controllers
         }
         
         [HttpGet("player-stats")]
-        public async Task<IActionResult> SchowPlayerStats([FromQuery] GameStatsRequest request)
+        public async Task<IActionResult> ShowPlayerStats([FromQuery] GameStatsRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // This helps in debugging if the model binding is incorrect.
+            }
             var result = await mediator.Send(request);
             return Ok(result);
         }
