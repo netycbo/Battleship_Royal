@@ -1,0 +1,82 @@
+﻿@page "/register"
+
+@inject ICustomHttpClientFactory Http
+
+<h3>Rejestracja nowego użytkownika</h3>
+
+<EditForm Model="registrationRequest" OnValidSubmit="HandleValidSubmit" formname="registrationRequest">
+    <DataAnnotationsValidator > </DataAnnotationsValidator>
+    <ValidationSummary> </ValidationSummary>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText  
+            class="form-control"
+            @bind-Value="registrationRequest.Email" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Hasło</label>
+        <InputText  type="password" class="form-control" @bind-Value="registrationRequest.Password" />
+    </div>
+
+    <div class="form-group">
+        <label for="confirmPassword">Potwierdź hasło</label>
+        <InputText  type="password" class="form-control" @bind-Value="registrationRequest.ConfirmPassword" />
+       </div>
+
+    <div class="form-group">
+        <label for="nickName" class="form-label">Nick</label>
+        <InputText  class="form-control" @bind-Value="registrationRequest.NickName" />
+      
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zarejestruj się</button>
+</EditForm>
+
+
+@if (registrationResponse != null)
+{
+    <div class="alert alert-success mt-3">
+        Użytkownik został pomyślnie zarejestrowany!
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-3">
+        @errorMessage
+    </div>
+}
+
+@code {
+    [SupplyParameterFromForm]
+    public NewUserRegistrationRequest registrationRequest { get; set; } = new NewUserRegistrationRequest();
+    public NewUserRegistrationResponse registrationResponse { get; set; }
+    private string errorMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var client = Http.CreateClient("register");
+
+            var response = await client.PostAsJsonAsync("register", registrationRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                registrationResponse = await response.Content.ReadFromJsonAsync<NewUserRegistrationResponse>();
+                errorMessage = null; // Clear any previous error messages
+            }
+            else
+            {
+                errorMessage = "Rejestracja nie powiodła się. Sprawdź dane.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Wystąpił błąd: {ex.Message}";
+        }
+
+    }
+}
