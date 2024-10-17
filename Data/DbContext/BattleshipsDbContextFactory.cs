@@ -10,9 +10,9 @@ namespace Battleship_Royal.Data.DbContext
         string basePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "Battleship_Royal.Api");
         public BattleshipsDbContext CreateDbContext(string[] args)
         {
-            // Budowanie konfiguracji z pliku appsettings.json
+         
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(basePath) // SetBasePath wymaga FileExtensions
+                .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json")
                 .Build();
 

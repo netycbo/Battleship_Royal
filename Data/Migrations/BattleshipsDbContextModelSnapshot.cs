@@ -34,7 +34,7 @@ namespace Battleship_Royal.Data.Migrations
 
                     b.HasIndex("PlayersId");
 
-                    b.ToTable("ApplicationUserGame");
+                    b.ToTable("ApplicationUserGame", (string)null);
                 });
 
             modelBuilder.Entity("Battleship_Royal.Data.Entities.ComputerPlayer", b =>
@@ -54,7 +54,7 @@ namespace Battleship_Royal.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ComputerPlayers");
+                    b.ToTable("ComputerPlayers", (string)null);
 
                     b.HasData(
                         new
@@ -98,7 +98,7 @@ namespace Battleship_Royal.Data.Migrations
 
                     b.HasIndex("ComputerPlayerId");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
                 });
 
             modelBuilder.Entity("Battleship_Royal.Data.Entities.Identity.ApplicationUser", b =>
@@ -198,7 +198,7 @@ namespace Battleship_Royal.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Tokens");
+                    b.ToTable("Tokens", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -9,6 +9,7 @@ namespace Battleship_Royal.Data.Entities.Identity
         public bool IsInGame { get; set; } = false;
         public DateTime JoinedDate { get; set; } = DateTime.Now;
         public List<Game> Games { get; set; } = new List<Game>();
+       
     }
        
 }

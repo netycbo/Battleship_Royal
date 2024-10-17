@@ -14,28 +14,27 @@ namespace Battleship_Royal.Data.DbContext
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+
             modelBuilder.Entity<ComputerPlayer>().HasData(new ComputerPlayer
             {
                 Id = 1,
                 NickName = "Red October"
             });
-            if ((!modelBuilder.Model.GetEntityTypes().Any(e => e.Name == typeof(IdentityRole).Name)))
-            {
-                modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
+
+            // Seedowanie ról
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = "2",
                     Name = "Player",
                     NormalizedName = "PLAYER"
                 },
                 new IdentityRole
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = "1", 
                     Name = "Admin",
                     NormalizedName = "ADMIN"
                 });
-
-            }
             base.OnModelCreating(modelBuilder);
         }
 
