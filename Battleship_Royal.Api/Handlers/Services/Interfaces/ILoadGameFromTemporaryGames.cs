@@ -5,6 +5,6 @@ namespace Battleship_Royal.Api.Handlers.Services.Interfaces
 {
     public interface ILoadGameFromTemporaryGames
     {
-        Task LoadFromTemporaryGames(PrepareGameDto newGameDto);
+        Task LoadFromTemporaryGames(PrepareGameVsComputerDto newGameDto);
     }
 }

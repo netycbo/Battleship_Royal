@@ -7,27 +7,17 @@ namespace Battleship_Royal.Api.Handlers.Services
 {
     public class UserIdService(IHttpContextAccessor accessor, BattleshipsDbContext context ) : IUserIdService
     {
-        public string GetUserId()
+        public string GetUserId(string userNickName)
         {
-            var userId = accessor.HttpContext?.User;
+            var userIdClaim = accessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (userId != null)
+            if (userIdClaim != null)
             {
-                var allClaims = userId.Claims.ToList();
-                foreach (var claim in allClaims)
-                {
-                    Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
-                }
+                Console.WriteLine($"User ID: {userIdClaim.Value}");
+                return userIdClaim.Value;
             }
 
-            var userClaims = userId.FindFirst(ClaimTypes.NameIdentifier);
-            if (userClaims == null)
-            {
-                Console.WriteLine("No Name claim found");
-                return "-1";
-            }
-
-            return userClaims.Value;
+            throw new Exception("User ID claim not found.");
         }
 
         public string GetUserNickName(string userId)
