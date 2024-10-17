@@ -30,10 +30,13 @@ namespace Battleship_Royal.Api.Handlers
             {
                 throw new Exception("Role assignment failed: " + string.Join(", ", roleAssignmentResult.Errors.Select(e => e.Description)));
             }
+            var userRoles = await userManager.GetRolesAsync(user);
+            var newUserDto = mapper.Map<NewUserDto>(user);
+            newUserDto.RoleName = string.Join(", ", userRoles);
 
             return new NewUserRegistrationResponse
             {
-                Data = mapper.Map<NewUserDto>(user)
+                Data = newUserDto
             };
         }
     }

@@ -20,6 +20,7 @@ using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServi
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Battleship_Royal.Api.SignalR;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,6 +59,7 @@ builder.Services.AddScoped<IGenerateJwtToken , GenerateJwtToken>();
 builder.Services.AddScoped<IGenerateRefreshToken, GenerateRefreshToken>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddSingleton<Random>();
+builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
 {
@@ -113,10 +115,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
 
+app.MapControllers();
+app.MapHub<GameHub>("/gamehub");
+
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapControllers();
 
 app.Run();

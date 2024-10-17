@@ -1,0 +1,32 @@
+﻿@page "/NewGame"
+
+
+<div class="game-setup-container">
+    <PrepareGameComponent @ref="prepareGameComponent" />
+
+    <div class="setup-content">
+        <div class="ship-selector-container">
+            <ShipSelector OnShipTypeSelected="OnShipTypeSelected" />
+        </div>
+        <div class="game-board-container">
+            <SetGameComponent @ref="setGameComponent" GameBoard="GameBoard" />
+        </div>
+    </div>
+</div>
+
+@code {
+    private PrepareGameComponent prepareGameComponent;
+    private SetGameComponent setGameComponent;
+    public GameBoard GameBoard { get; private set; }
+
+    protected override void OnInitialized()
+    {
+        GameBoard = new GameBoard();
+    }
+
+    private void OnShipTypeSelected(int length)
+    {
+        // Pass the selected ship length to the SetGame component
+        setGameComponent.SetShipLength(length);
+    }
+}

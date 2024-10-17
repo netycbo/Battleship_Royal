@@ -22,29 +22,29 @@ namespace Battleship_Royal.Api.Handlers
 
             if (request.Player1 != null) 
             {
-                var player1Id = idService.GetUserId();
+                var player1Id = "b69252ff-2794-4c8b-a632-7094f004bb52";
                 if (player1Id == "-1")
                 {
                     throw new ArgumentException("player1 is not authenticated");
                 }
 
-                var player1 = await userManager.FindByIdAsync(player1Id);
-                if (player1 == null)
-                {
-                    throw new Exception($"Player1 with ID {player1Id} not found.");
-                }
+                //var player1 = await userManager.FindByIdAsync(player1Id);
+                //if (player1 == null)
+                //{
+                //    throw new Exception($"Player1 with ID {player1Id} not found.");
+                //}
 
-                if (player1.IsInGame)
-                {
-                    throw new Exception($"IsInGame property is null for player1 : {player1.UserName}.");
-                }
+                //if (player1.IsInGame)
+                //{
+                //    throw new Exception($"IsInGame property is null for player1 : {player1.UserName}.");
+                //}
 
-                if (player1.IsInGame)
-                {
-                    throw new Exception($"Player1 : {player1.UserName} is already in game.");
-                }
+                //if (player1.IsInGame)
+                //{
+                //    throw new Exception($"Player1 : {player1.UserName} is already in game.");
+                //}
             }
-            if (request.Player2 != null)
+            if (request.Player2 == null)
             {
                 var player2Id = idService.GetUserId();
                 
@@ -63,7 +63,7 @@ namespace Battleship_Royal.Api.Handlers
                     throw new Exception("No computer player found in the system.");
                 }
               
-                var difficulty = request.DifficultyLevel;
+                //var difficulty = request.DifficultyLevel;
                 
             }
             if(request.IsSpeedGame)

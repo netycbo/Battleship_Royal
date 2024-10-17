@@ -4,7 +4,7 @@
     {
         public string NickName { get; set; }
         public DateOnly JoinDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
-        public string Role { get; set; }
+        public string RoleName { get; set; }
 
     }
 }
