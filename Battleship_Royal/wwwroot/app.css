@@ -1,4 +1,4 @@
-html, body {
+﻿html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -101,4 +101,118 @@ div[class^="div"] {
         flex: 1 0 100%; /* Adjust to 1 div in a row on very small screens */
     }
 }
+.game-setup-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
 
+.setup-content {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1; /* Allow this section to take up remaining space */
+}
+
+.ship-selector-container {
+    width: 30%; /* Adjust as necessary */
+    padding: 10px;
+}
+
+.game-board-container {
+    width: 70%; /* Adjust as necessary */
+    padding: 10px;
+    border-left: 1px solid #ccc; /* Optional: Add a border for separation */
+}
+
+/* Additional styles for the game board and cells */
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 2px; /* Spacing between cells */
+}
+
+.cell {
+    width: 100%;
+    padding-bottom: 100%; /* Makes cells square */
+    background-color: lightblue; /* Default color */
+    cursor: pointer;
+}
+
+    .cell.ship {
+        background-color: darkblue; /* Color for ship cells */
+    }
+
+    .cell.hit {
+        background-color: red; /* Color for hit cells */
+    }
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px; /* Szerokość przełącznika */
+    height: 34px; /* Wysokość przełącznika */
+}
+
+    .switch input {
+        opacity: 0; /* Ukrywa checkbox */
+        width: 0; /* Ustawia szerokość na 0 */
+        height: 0; /* Ustawia wysokość na 0 */
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Kolor przełącznika */
+    transition: .4s; /* Animacja przełączania */
+    border-radius: 34px; /* Zaokrąglenie krawędzi */
+}
+
+/* Kiedy checkbox jest zaznaczony */
+input:checked + .slider {
+    background-color: #2196F3; /* Kolor przełącznika po zaznaczeniu */
+}
+
+/* Tworzenie kółka na przełączniku */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px; /* Wysokość kółka */
+    width: 26px; /* Szerokość kółka */
+    left: 4px; /* Odstęp od lewej */
+    bottom: 4px; /* Odstęp od dołu */
+    background-color: white; /* Kolor kółka */
+    border-radius: 50%; /* Zaokrąglenie kółka */
+    transition: .4s; /* Animacja przesuwania kółka */
+}
+
+/* Kiedy checkbox jest zaznaczony, przesuwamy kółko */
+input:checked + .slider:before {
+    transform: translateX(26px); /* Przesunięcie kółka w prawo */
+}
+
+/* Stylizacja dla divu z zawartością */
+.content {
+    margin-top: 30px; /* Odstęp nad zawartością divu */
+    padding: 10px; /* Wewnętrzne odstępy */
+    border: 1px solid #ccc; /* Obramowanie */
+    border-radius: 4px; /* Zaokrąglenie krawędzi */
+    background: linear-gradient(90deg, #343a40, #007bff); /* Tło divu */
+}
+/*.container1 {
+    background: linear-gradient(90deg, rgba(35,161,190,1) 10%, rgba(32,43,43,1) 84%);
+}*/
+.label-text {
+    margin-right: 90px; /* Odstęp między tekstem a przełącznikiem */
+    margin-left: 90px;
+    margin-top: 20px;
+    font-size: 16px; /* Rozmiar czcionki dla tekstu */
+    vertical-align: middle; /* Wyrównanie tekstu w pionie */
+    align-content: center;
+    font-size: larger;
+    color: antiquewhite;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
