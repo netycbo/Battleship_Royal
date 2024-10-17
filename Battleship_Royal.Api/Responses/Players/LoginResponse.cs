@@ -5,8 +5,7 @@ namespace Battleship_Royal.Api.Responses.Players
 {
     public class LoginResponse : BaseResponse<LoginDto>
     {
-        public string Token { get; set; }
-        public string RefreshToken { get; set; }
+      
         public string Error { get; set; }
 
     }

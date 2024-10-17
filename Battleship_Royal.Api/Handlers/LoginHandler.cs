@@ -45,13 +45,16 @@ namespace Battleship_Royal.Api.Handlers
             };
 
             await context.Tokens.AddAsync(saveTokens);
-            
+            await context.SaveChangesAsync(cancellationToken);
+
             var redyToLogInn = mapper.Map<LoginDto>(userExist);
+            redyToLogInn.Token = token;
+            redyToLogInn.RefreshToken = refreshToken;
             return new LoginResponse
             {
                 Data = redyToLogInn,
-                Token = token,
-                RefreshToken = refreshToken
+                
+
             };
         }      
     }
