@@ -23,7 +23,7 @@ namespace Battleship_Royal.Api.Handlers
                 throw new Exception("TemporaryGame is null");
             }
 
-            var prepareGame = deserializeService.Deserialize<PrepareGameDto>(temporaryGameFromRedis);
+            var prepareGame = deserializeService.Deserialize<PrepareGameVsComputerDto>(temporaryGameFromRedis);
             if (prepareGame == null)
             {
                 throw new Exception("PrepareGame is null");

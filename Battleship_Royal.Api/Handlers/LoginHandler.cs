@@ -9,10 +9,6 @@ using Battleship_Royal.Data.Entities;
 using Battleship_Royal.Data.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Battleship_Royal.Api.Handlers
 {
@@ -32,6 +28,27 @@ namespace Battleship_Royal.Api.Handlers
             {
                 return new LoginResponse { Error = "Wrong password" };
             }
+
+            var existingToken = context.Tokens.FirstOrDefault(t => t.UserId == userExist.Id);
+            if (existingToken != null)
+            {
+                var newRefreshToken = generateRefreshToken.Generate();
+                existingToken.RefreshToken = newRefreshToken;
+                context.Tokens.Update(existingToken);
+                var newRoles = await userManager.GetRolesAsync(userExist);
+                var newToken = await generateJwtToken.GenerateToken(userExist, newRoles);
+
+                await context.SaveChangesAsync(cancellationToken);
+
+                var loggedInUser = mapper.Map<LoginDto>(userExist);
+                loggedInUser.Token = newToken;
+                loggedInUser.RefreshToken = newRefreshToken;
+                return new LoginResponse
+                {
+                    Data = loggedInUser
+                };
+            }
+
             var roles = await userManager.GetRolesAsync(userExist);
 
             var token = await generateJwtToken.GenerateToken(userExist, roles);
@@ -52,9 +69,7 @@ namespace Battleship_Royal.Api.Handlers
             redyToLogInn.RefreshToken = refreshToken;
             return new LoginResponse
             {
-                Data = redyToLogInn,
-                
-
+                Data = redyToLogInn
             };
         }      
     }

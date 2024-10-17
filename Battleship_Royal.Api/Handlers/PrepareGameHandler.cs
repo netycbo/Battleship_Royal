@@ -12,81 +12,56 @@ namespace Battleship_Royal.Api.Handlers
 {
     public class PrepareGameHandler(IMapper mapper, IUserIdService idService,
             UserManager<ApplicationUser> userManager, BattleshipsDbContext context, IGameCacheService gameCacheService)
-        : IRequestHandler<PrepareGameRequest, PrepareGameResponse>
+        : IRequestHandler<PrepareGameVsComputerRequest, PrepareGameVsComputerResponse>
     {
-        public async Task<PrepareGameResponse> Handle(PrepareGameRequest request, CancellationToken cancellationToken)
+        public async Task<PrepareGameVsComputerResponse> Handle(PrepareGameVsComputerRequest request, CancellationToken cancellationToken)
         {
             var gameId = Guid.NewGuid().ToString();
             TimeOnly startTime = TimeOnly.FromDateTime(DateTime.UtcNow);
             TimeOnly? endTime = null;
 
-            if (request.Player1 != null) 
+            if (request.PlayerNickName != null)
             {
-                var player1Id = "b69252ff-2794-4c8b-a632-7094f004bb52";
+                var player1Id = idService.GetUserId(request.PlayerNickName);
                 if (player1Id == "-1")
                 {
                     throw new ArgumentException("player1 is not authenticated");
                 }
 
-                //var player1 = await userManager.FindByIdAsync(player1Id);
-                //if (player1 == null)
-                //{
-                //    throw new Exception($"Player1 with ID {player1Id} not found.");
-                //}
-
-                //if (player1.IsInGame)
-                //{
-                //    throw new Exception($"IsInGame property is null for player1 : {player1.UserName}.");
-                //}
-
-                //if (player1.IsInGame)
-                //{
-                //    throw new Exception($"Player1 : {player1.UserName} is already in game.");
-                //}
-            }
-            if (request.Player2 == null)
-            {
-                var player2Id = idService.GetUserId();
-                
-                var player2 = await userManager.FindByIdAsync(player2Id);
-                if (player2.IsInGame)
+                var player1 = await userManager.FindByIdAsync(player1Id);
+                if (player1 == null)
                 {
-                    throw new Exception($"player2 : {request.Player2} is allredy in game");
-                }
-            }
-            else
-            {
-                var computerPlayer = context.ComputerPlayers.FirstOrDefault();
-
-                if (computerPlayer == null)
-                {
-                    throw new Exception("No computer player found in the system.");
-                }
-              
-                //var difficulty = request.DifficultyLevel;
-                
-            }
-            if(request.IsSpeedGame)
-            {
-                int timerMinutes = request.Timer;
-
-                if (timerMinutes <= 0)
-                {
-                    throw new ArgumentException("Invalid timer value. It must be greater than 0.");
+                    throw new Exception($"Player1 with ID {player1Id} not found.");
                 }
 
-                endTime = startTime.AddMinutes(timerMinutes);
-            }
-            var prepareGameReady = mapper.Map<PrepareGameDto>(request);
-            gameCacheService.SetGameAsync(gameId,prepareGameReady);
+                var difficulty = request.DifficultyLevel;
 
-            return new PrepareGameResponse
-            {
-                Data = prepareGameReady,
-                GameId = gameId
-            };
+                if (request.IsSpeedGame)
+                {
+                    int timerMinutes = request.Timer;
+
+                    if (timerMinutes <= 0)
+                    {
+                        throw new ArgumentException("Invalid timer value. It must be greater than 0.");
+                    }
+
+                    endTime = startTime.AddMinutes(timerMinutes);
+                }
+
+                var prepareGameReady = mapper.Map<PrepareGameVsComputerDto>(request);
+                prepareGameReady.GameId = gameId;
+                prepareGameReady.DifficultyLevel = difficulty;
+                gameCacheService.SetGameAsync(gameId, prepareGameReady);
+
+                return new PrepareGameVsComputerResponse
+                {
+                    Data = prepareGameReady,
+                    
+                };
+            }
+
+            // Handle the case when PlayerName is null (if needed)
+            throw new ArgumentException("Player name cannot be null.");
         }
-           
-        
     }
 }

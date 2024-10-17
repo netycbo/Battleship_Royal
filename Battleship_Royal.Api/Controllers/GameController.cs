@@ -11,9 +11,9 @@ namespace Battleship_Royal.Api.Controllers
     [ApiController]
     public class GameController(IMediator mediator) : ControllerBase
     {
-        //[Authorize(Roles = "Player")]
+        [Authorize(Roles = "Player")]
         [HttpPost("prepare-game")]
-        public async Task<IActionResult> PrepareMatch([FromBody] PrepareGameRequest request)
+        public async Task<IActionResult> PrepareMatch([FromBody] PrepareGameVsComputerRequest request)
         {
             var result = await mediator.Send(request);
             return Ok(result);

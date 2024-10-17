@@ -26,10 +26,10 @@ namespace Battleship_Royal.Api.Mappings
             CreateMap<ApplicationUser, LoginDto>();
             CreateMap<ApplicationUser, NewUserDto>()
                 .ForMember(x => x.NickName, x => x.MapFrom(y=> y.UserName));
-            CreateMap<PrepareGameRequest, PrepareGameDto>();
+            CreateMap<PrepareGameVsComputerRequest, PrepareGameVsComputerDto>();
             CreateMap<SaveToDbRequest, SaveToDbDto>();
             CreateMap<SaveToDbDto, Game>();
-            CreateMap<PrepareGameRequest, SaveToDbWithComputerPlayerDto>();
+            CreateMap<PrepareGameVsComputerRequest, SaveToDbWithComputerPlayerDto>();
             CreateMap<RefreshTokenRequest, RefreshTokenDto>();
         }
 

@@ -2,7 +2,8 @@
 
 namespace Battleship_Royal.Api.Responses.Games
 {
-    public class RematchRersponse : BaseResponse<PrepareGameVsComputerDto>
+    public class PrepareGameVsComputerResponse : BaseResponse<PrepareGameVsComputerDto>
     {
+       
     }
 }
