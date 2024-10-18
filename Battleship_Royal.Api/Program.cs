@@ -7,10 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Battleship_Royal.Api.Handlers.Services.Interfaces;
 using Battleship_Royal.Api.Handlers.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis;
-using StackExchange.Redis.Extensions.Core.Abstractions;
-using StackExchange.Redis.Extensions.Newtonsoft;
 using Microsoft.Extensions.Options;
 using Battleship_Royal.GameLogic;
 using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
@@ -18,8 +14,6 @@ using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.Interfaces;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Battleship_Royal.Api.SignalR;
 
 
@@ -115,12 +109,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAllOrigins");
 
-app.MapControllers();
-app.MapHub<GameHub>("/gamehub");
+
+//app.MapHub<GameHub>("/gamehub");
 
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapControllers();
 app.Run();

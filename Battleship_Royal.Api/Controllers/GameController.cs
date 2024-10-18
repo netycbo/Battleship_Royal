@@ -7,13 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Battleship_Royal.Api.Controllers
 {
+    [Authorize(Roles = "Player")]
     [Route("api/[controller]")]
     [ApiController]
     public class GameController(IMediator mediator) : ControllerBase
     {
-        [Authorize(Roles = "Player")]
-        [HttpPost("prepare-game")]
+        [HttpPost("prepare-gameVsComputer")]
         public async Task<IActionResult> PrepareMatch([FromBody] PrepareGameVsComputerRequest request)
+        {
+            var result = await mediator.Send(request);
+            return Ok(result);
+        }
+
+        [HttpPost("prepare-gameVsHuman")]
+        public async Task<IActionResult> StartGame([FromBody] PrepareGameVsHumanRequest request)
         {
             var result = await mediator.Send(request);
             return Ok(result);
@@ -37,7 +44,7 @@ namespace Battleship_Royal.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState); // This helps in debugging if the model binding is incorrect.
+                return BadRequest(ModelState); 
             }
             var result = await mediator.Send(request);
             return Ok(result);

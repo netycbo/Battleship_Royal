@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Battleship_Royal.Api.Controllers;
 using Battleship_Royal.Api.Dtos;
 using Battleship_Royal.Api.Dtos.Game;
 using Battleship_Royal.Api.Requests.Game;
@@ -21,7 +22,7 @@ namespace Battleship_Royal.Api.Mappings
                 .ForMember(x => x.UserName, x => x.MapFrom(y => y.NickName));
             CreateMap<NewUserRegistrationRequest, NewUserDto>();
             CreateMap<NewUserRegistrationResponse,NewUserDto>();
-                
+            CreateMap<PrepareGameVsHumanRequest, PrepareGameVsHumanDto>();
                 
             CreateMap<ApplicationUser, LoginDto>();
             CreateMap<ApplicationUser, NewUserDto>()

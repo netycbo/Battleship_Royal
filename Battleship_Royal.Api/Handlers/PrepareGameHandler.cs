@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using Battleship_Royal.Api.Dtos.Game;
 using Battleship_Royal.Api.Handlers.Services.Interfaces;
 using Battleship_Royal.Api.Requests.Game;
@@ -17,7 +18,7 @@ namespace Battleship_Royal.Api.Handlers
         public async Task<PrepareGameVsComputerResponse> Handle(PrepareGameVsComputerRequest request, CancellationToken cancellationToken)
         {
             var gameId = Guid.NewGuid().ToString();
-            TimeOnly startTime = TimeOnly.FromDateTime(DateTime.UtcNow);
+            TimeOnly startTime = TimeOnly.FromDateTime(DateTime.Now);
             TimeOnly? endTime = null;
 
             if (request.PlayerNickName != null)
@@ -38,24 +39,26 @@ namespace Battleship_Royal.Api.Handlers
 
                 if (request.IsSpeedGame)
                 {
-                    int timerMinutes = request.Timer;
+                    TimeOnly timerValue = request.Timer;
 
-                    if (timerMinutes <= 0)
+                    if (timerValue <= TimeOnly.FromDateTime(DateTime.Now))
                     {
-                        throw new ArgumentException("Invalid timer value. It must be greater than 0.");
+                        throw new ArgumentException("Invalid timer value. It must be a future time.");
                     }
 
-                    endTime = startTime.AddMinutes(timerMinutes);
+                    endTime = startTime.AddMinutes(timerValue.Minute).AddHours(timerValue.Hour);
                 }
+
 
                 var prepareGameReady = mapper.Map<PrepareGameVsComputerDto>(request);
                 prepareGameReady.GameId = gameId;
                 prepareGameReady.DifficultyLevel = difficulty;
+                prepareGameReady.TimeOfEndGame = endTime ?? request.Timer; 
                 gameCacheService.SetGameAsync(gameId, prepareGameReady);
 
                 return new PrepareGameVsComputerResponse
                 {
-                    Data = prepareGameReady,
+                    Data = prepareGameReady
                     
                 };
             }

@@ -11,6 +11,7 @@ namespace Battleship_Royal.Api.Requests.Game
         [Range(1, 3, ErrorMessage = "Difficulty level must be between 1 and 3.")]
         public int DifficultyLevel { get; set; } = 0;
         public bool IsSpeedGame { get; set; } = false;
-        public int Timer { get; set; } = 10;
+
+        public TimeOnly Timer { get; set; } = new TimeOnly(10, 10, 0, 0);
     }
 }
