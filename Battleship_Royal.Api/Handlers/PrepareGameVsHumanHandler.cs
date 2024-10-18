@@ -2,7 +2,6 @@
 using Battleship_Royal.Api.Controllers;
 using Battleship_Royal.Api.Dtos.Game;
 using Battleship_Royal.Api.Handlers.Services.Interfaces;
-using Battleship_Royal.Api.Requests.Game;
 using Battleship_Royal.Api.Responses.Games;
 using MediatR;
 
