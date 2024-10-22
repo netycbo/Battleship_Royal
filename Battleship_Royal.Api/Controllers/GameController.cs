@@ -7,16 +7,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Battleship_Royal.Api.Controllers
 {
-    [Authorize(Roles = "Player")]
+    //[Authorize(Roles = "Player")]
     [Route("api/[controller]")]
     [ApiController]
     public class GameController(IMediator mediator) : ControllerBase
     {
-        [HttpPost("prepare-gameVsComputer")]
+        [HttpPost("prepare-gamevscomputer")]
         public async Task<IActionResult> PrepareMatch([FromBody] PrepareGameVsComputerRequest request)
         {
-            var result = await mediator.Send(request);
-            return Ok(result);
+            try
+            {
+                var result = await mediator.Send(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log exception details
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpPost("prepare-gameVsHuman")]

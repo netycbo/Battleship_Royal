@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
 using Battleship_Royal.Api.Dtos.Game;
 using Battleship_Royal.Api.Handlers.Services.Interfaces;
 using Battleship_Royal.Api.Requests.Game;
@@ -18,8 +17,8 @@ namespace Battleship_Royal.Api.Handlers
         public async Task<PrepareGameVsComputerResponse> Handle(PrepareGameVsComputerRequest request, CancellationToken cancellationToken)
         {
             var gameId = Guid.NewGuid().ToString();
-            TimeOnly startTime = TimeOnly.FromDateTime(DateTime.Now);
-            TimeOnly? endTime = null;
+            DateTime startTime = DateTime.Now;
+            DateTime? endTime = null;
 
             if (request.PlayerNickName != null)
             {
@@ -39,21 +38,24 @@ namespace Battleship_Royal.Api.Handlers
 
                 if (request.IsSpeedGame)
                 {
-                    TimeOnly timerValue = request.Timer;
+                    int timerMinutes = request.Timer; 
 
-                    if (timerValue <= TimeOnly.FromDateTime(DateTime.Now))
+                    if (timerMinutes <= 0)
                     {
-                        throw new ArgumentException("Invalid timer value. It must be a future time.");
+                        throw new ArgumentException("Invalid timer value. It must be greater than 0.");
                     }
 
-                    endTime = startTime.AddMinutes(timerValue.Minute).AddHours(timerValue.Hour);
+                    endTime = startTime.AddMinutes(timerMinutes);
                 }
-
+                else
+                {
+                    endTime = startTime.AddMinutes(request.Timer);
+                }
 
                 var prepareGameReady = mapper.Map<PrepareGameVsComputerDto>(request);
                 prepareGameReady.GameId = gameId;
                 prepareGameReady.DifficultyLevel = difficulty;
-                prepareGameReady.TimeOfEndGame = endTime ?? request.Timer; 
+                prepareGameReady.TimeOfEndGame = endTime?.ToString("HH:mm");
                 gameCacheService.SetGameAsync(gameId, prepareGameReady);
 
                 return new PrepareGameVsComputerResponse
@@ -62,8 +64,6 @@ namespace Battleship_Royal.Api.Handlers
                     
                 };
             }
-
-            // Handle the case when PlayerName is null (if needed)
             throw new ArgumentException("Player name cannot be null.");
         }
     }

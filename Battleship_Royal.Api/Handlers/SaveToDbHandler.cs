@@ -16,14 +16,13 @@ namespace Battleship_Royal.Api.Handlers
             SaveToDbDto readyToSave = null;
             try
             {
-                if (request.GameId.Any() && request.WinnerId.Any() && request.Player1Id.Any() && request.Player2Id.Any() &&
+                if (request.GameId.Any() && request.WinnerId.Any() && request.Player1NickName.Any() && request.Player2NickName.Any() &&
                     request.DateOfGame != default(DateTime) && request.BeginningOfGame != default(TimeOnly) && request.EndingOfGame != default(TimeOnly))
                 {
-                    if (request.Player2Id == "1")
+                    if (request.Player2NickName == "1")
                     {
                         var readyToSaveWithComputerPlayer = mapper.Map<SaveToDbWithComputerPlayerDto>(request);
                         await saveGames.SaveToDbWithComputerPlayerAsync(readyToSaveWithComputerPlayer);
-                        readyToSave = (SaveToDbDto?)readyToSaveWithComputerPlayer;
                     }
                     else
                     {
@@ -36,7 +35,7 @@ namespace Battleship_Royal.Api.Handlers
             {
                 Console.WriteLine($"Missing data in request: {ex.Message}");
             }
-
+             
             return new SaveToDbResponse
             {
                 Data = readyToSave

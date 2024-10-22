@@ -12,6 +12,6 @@ namespace Battleship_Royal.Api.Requests.Game
         public int DifficultyLevel { get; set; } = 0;
         public bool IsSpeedGame { get; set; } = false;
 
-        public TimeOnly Timer { get; set; } = new TimeOnly(10, 10, 0, 0);
+        public int Timer { get; set; } = 10;
     }
 }
