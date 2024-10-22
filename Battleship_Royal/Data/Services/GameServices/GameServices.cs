@@ -25,7 +25,6 @@ namespace Battleship_Royal.Data.Services.GameServices
 
             return gameStatsResponse;
         }
-
         public async Task<RematchRersponse> GetGameSettingsFromRedisAsync(RematchRequest request)
         {
             var client = clientFactory.CreateClient("rematch");
@@ -46,7 +45,7 @@ namespace Battleship_Royal.Data.Services.GameServices
 
         public async Task<PrepareGameVsComputerResponse> PrepareMatchVsComputerAsync(PrepareGameVsComputerRequest request)
         {
-            var client = clientFactory.CreateClient("prepare-gameVsComputer");
+            var client = clientFactory.CreateClient("prepare-gamevscomputer");
             var response = await client.PostAsJsonAsync<PrepareGameVsComputerRequest>("", request);
             response.EnsureSuccessStatusCode();
 
@@ -60,7 +59,6 @@ namespace Battleship_Royal.Data.Services.GameServices
 
             return await response.Content.ReadFromJsonAsync<PrepareGameVsHumanResponse>();
         }
-
         public async Task<SaveToDbResponse> SaveToDbAsync(SaveToDbRequest request)
         {
             var client = clientFactory.CreateClient("save-To-Db");
