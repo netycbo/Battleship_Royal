@@ -45,7 +45,7 @@
     {
         try
         {
-            loginRequest.StartSession = TimeOnly.FromDateTime(DateTime.Now);
+            
             var client = Http.CreateClient("login");
             var response = await client.PostAsJsonAsync("login", loginRequest);
             if (response.IsSuccessStatusCode)

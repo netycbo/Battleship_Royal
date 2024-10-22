@@ -1,32 +1,58 @@
 ﻿@page "/NewGame"
+@rendermode InteractiveServer
 
-
-<div class="game-setup-container">
-    <PrepareGameComponent @ref="prepareGameComponent" />
-
-    <div class="setup-content">
-        <div class="ship-selector-container">
-            <ShipSelector OnShipTypeSelected="OnShipTypeSelected" />
+<div class="container">
+    <div class="container1">
+        <div>
+            <label>
+                <span class="label-text">Tekst po lewej stronie</span> 
+                <label class="switch">
+                    <input type="checkbox" @onchange="ToggleDiv1Visibility" />
+                    <span class="slider round"></span>
+                </label>
+            </label>
+            @if (isDiv1Hidden)
+            {
+                <div class="content">
+                    <PrepareGameComponent />
+                </div>
+            }
         </div>
-        <div class="game-board-container">
-            <SetGameComponent @ref="setGameComponent" GameBoard="GameBoard" />
-        </div>
+    </div>
+
+    <div>
+        <label>
+       <span class="label-text">Tekst po lewej stronie</span>
+            <label class="switch">
+            <input type="checkbox" @onchange="ToggleDiv2Visibility" />
+            <span class="slider round"></span>
+        </label>
+    </label>
+        @if (isDiv2Hidden)
+        {
+            <div class="content">
+                <p>Zawartość drugiego div.</p>
+            </div>
+        }
     </div>
 </div>
 
 @code {
-    private PrepareGameComponent prepareGameComponent;
-    private SetGameComponent setGameComponent;
-    public GameBoard GameBoard { get; private set; }
+    private bool isDiv1Hidden = false;
+    private bool isDiv2Hidden = false;
 
-    protected override void OnInitialized()
+    private void ToggleDiv1Visibility(ChangeEventArgs e)
     {
-        GameBoard = new GameBoard();
+        if (e.Value is bool value)
+        {
+            isDiv1Hidden = value;
+            StateHasChanged();
+        }
     }
 
-    private void OnShipTypeSelected(int length)
+    private void ToggleDiv2Visibility(ChangeEventArgs e)
     {
-        // Pass the selected ship length to the SetGame component
-        setGameComponent.SetShipLength(length);
+        isDiv2Hidden = (bool)e.Value;
+        StateHasChanged();
     }
 }
