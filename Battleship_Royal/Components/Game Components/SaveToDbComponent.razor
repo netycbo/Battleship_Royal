@@ -1,0 +1,20 @@
+﻿@inject ICustomHttpClientFactory http
+
+@code {
+    public SaveToDbRequest SaveToDbRequest { get; set; } = new();
+    public SaveToDbResponse SaveToDbResponse { get; set; }
+    [Parameter]
+    public string GameId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = http.CreateClient("save-To-Db");
+        var response = await client.PostAsJsonAsync("save-To-Db", SaveToDbRequest);
+        Console.WriteLine(response);
+        Console.WriteLine(SaveToDbRequest);
+        if (response.IsSuccessStatusCode)
+        {
+            SaveToDbResponse = await response.Content.ReadFromJsonAsync<SaveToDbResponse>();
+        }
+    }
+}

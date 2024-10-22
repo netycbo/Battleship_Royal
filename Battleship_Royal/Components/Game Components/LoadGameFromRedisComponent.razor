@@ -1,0 +1,71 @@
+﻿@using AutoMapper
+@using Battleship_Royal.Api.Dtos.Game
+@using Newtonsoft.Json
+@inject ICustomHttpClientFactory Http
+@inject IMapper Mapper
+
+
+<h3>LoadGameFromRedisComponent</h3>
+
+@code {
+    public RematchRequest Request { get; set; } = new();
+    public RematchRersponse Response { get; set; }
+    public PrepareGameVsComputerDto RematchRersponseDto { get; set; }
+    [Parameter]
+    public string GameId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Request.GameId = GameId;
+        await LoadGameFromRedis();
+    }
+
+    private async Task LoadGameFromRedis()
+    {
+        try
+        {
+            var client = Http.CreateClient("remach");
+            if (client == null)
+            {
+                throw new InvalidOperationException("Client is null");
+            }
+            var query = $"remach?GameId={Uri.EscapeDataString(Request.GameId)}";
+            var response = await client.GetAsync(query);
+            RematchRersponse responseObject = null;
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                responseObject = JsonConvert.DeserializeObject<RematchRersponse>(content);
+                if (responseObject == null || responseObject.Data == null)
+                {
+                    throw new InvalidOperationException("Deserialization failed: responseObject was null.");
+                }
+                RematchRersponseDto = Mapper.Map<PrepareGameVsComputerDto>(responseObject.Data);
+                StateHasChanged();
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new InvalidOperationException($"Failed to load game stats. Status code: {response.StatusCode}");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.Error.WriteLine($"HTTP request error: {ex.Message}");
+            throw;
+        }
+        catch (JsonException ex)
+        {
+            Console.Error.WriteLine($"JSON deserialization error: {ex.Message}");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Unexpected error: {ex.Message}");
+            throw;
+        }
+    }
+}
+    
+
+

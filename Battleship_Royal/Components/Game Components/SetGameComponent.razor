@@ -1,9 +1,8 @@
-﻿@page "/setgame"
+﻿@page "/set-game/{gameId}"
+
 @using Battleship_Royal.GameLogic
 
 <h3>Set Your Ships</h3>
-
-<ShipSelector OnShipTypeSelected="OnShipTypeSelected" />
 
 <div class="game-board">
     @for (int row = 0; row < 10; row++)
@@ -11,8 +10,8 @@
         <div class="board-row">
             @for (int col = 0; col < 10; col++)
             {
-                var cell = new Cell();
-                <div class="cell @(cell.HasShip ? "ship" : "") @(cell.IsHit ? "hit" : "")" 
+                var cell = GameBoard.Board[row, col];
+                <div class="cell @(cell.HasShip ? "ship" : "") @(cell.IsHit ? "hit" : "")"
                      @onclick="() => OnCellClick(row, col)">
                 </div>
             }
@@ -26,62 +25,54 @@
 }
 
 @code {
+    
+    public GameBoard GameBoard { get; set; } = new GameBoard(); 
     [Parameter]
-    public GameBoard GameBoard { get; set; } = new GameBoard();
+    public string GameId { get; set; }
     private int shipLength;
-    private Cell Cell { get; set; }
     private List<(int Row, int Col)> shipCoordinates = new List<(int Row, int Col)>();
     private string? errorMessage;
 
-    protected override void OnInitialized()
-    {
-        GameBoard = new GameBoard();
-    }
-
     public void OnShipTypeSelected(int length)
     {
-        // Set the ship length based on the selected type
         shipLength = length;
-
-        // Reset the coordinates for the new ship placement
-        shipCoordinates.Clear();
-        errorMessage = null; // Reset any previous error messages
+        shipCoordinates.Clear(); 
+        errorMessage = null; 
     }
 
     private void OnCellClick(int row, int col)
     {
-        if (shipLength == 0) return; // Only proceed if a ship type is selected
+        if (shipLength == 0) return;
+        var cell = GameBoard.Board[row, col]; 
 
-        // Check if the cell is already occupied
-        if (Cell.HasShip)
+        
+        if (cell.HasShip)
         {
             errorMessage = "This cell is already occupied. Choose another cell.";
-            StateHasChanged(); // Refresh the UI to show the error
+            StateHasChanged(); 
             return;
         }
 
-        // Add the clicked cell to the ship coordinates
         shipCoordinates.Add((row, col));
-
-        // If the user has clicked enough times to place the ship
         if (shipCoordinates.Count == shipLength)
         {
             try
             {
                 GameBoard.PlaceShip(shipCoordinates);
-                errorMessage = null; // Reset any previous error messages
-                shipCoordinates.Clear(); // Clear coordinates for next ship
-                StateHasChanged(); // Refresh the UI to show the updated board
+                errorMessage = null; 
+                shipCoordinates.Clear();
+                StateHasChanged(); 
             }
             catch (Exception ex)
             {
-                errorMessage = ex.Message; // Show the error message
+                errorMessage = ex.Message;
             }
         }
     }
+
     public void SetShipLength(int length)
     {
         shipLength = length;
-        shipCoordinates.Clear(); // Clear any previous selections
+        shipCoordinates.Clear(); 
     }
 }

@@ -1,47 +1,90 @@
 ﻿@inject ICustomHttpClientFactory Http
-
-
-<EditForm Model="@Request" OnValidSubmit="HandleValidSubmit" formName="preparteGame" >
-    <DataAnnotationsValidator/>
-    <DataAnnotationsValidator/>
-
-    <div class="form-group">
-        <label for=" player1">Player 1</label>
-        <InputText class="form-control" id="player1" name="player1" @bind-Value="@Request.Player1" />
-    </div>
+@inject ILogger<PrepareGameComponent> Logger
+@inject NavigationManager Navigation
+<EditForm Model="prepareGameRequest" OnValidSubmit="HandleValidSubmit" FormName="PrepareGame">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
     <div class="form-group">
-        <label for=" player2">Player 2</label>
-        <InputText class="form-control" id="player2" name="player2" @bind-Value="@Request.Player2" />
+        <label for="player1">Player 1</label>
+        <InputText class="form-control" id="player1" name="player1" @bind-Value="prepareGameRequest.PlayerNickName" />
     </div>
-
+    <div>
+        <label>
+            <span class="label-text">Do you want a speed game?</span>
+            <label class="switch">
+                <input type="checkbox" @onchange="ToggleSpeedGame" />
+                <span class="slider round"></span>
+            </label>
+        </label>
+    </div>
     <div class="form-group">
-        <label for="IsSpeedGame">IsSpeedGame</label>
-        <InputCheckbox class="form-control" id="IsSpeedGame" name="IsSpeedGame" @bind-Value="@Request.IsSpeedGame" />
+        <label for="difficulty level">Difficulty level</label>
+        <InputNumber class="form-control" id="difficulty level" name="difficulty level" @bind-Value="prepareGameRequest.DifficultyLevel" />
     </div>
 
-    <div class="form-control">
-        <label for="timer">Timer</label>
-        <InputNumber class="form-control" id="timer" name="timer" @bind-Value="@Request.Timer" />
-    </div>
+    @if (prepareGameRequest.IsSpeedGame) // Updated to use model directly
+    {
+        <div class="form-group">
+            <label for="timer">Timer</label>
+            <InputNumber class="form-control" id="timer" name="timer" @bind-Value="prepareGameRequest.Timer" />
+        </div>
+    }
 
+    <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 
-
 @code {
-        [SupplyParameterFromForm]
-        public PrepareGameRequest Request { get; set; } = new PrepareGameRequest();
-        [Parameter]
-        public PrepareGameResponse Response { get; set; }
+    private bool isDiv1Hidden = false; // Starts with false
+    public PrepareGameVsComputerRequest prepareGameRequest { get; set; } = new PrepareGameVsComputerRequest();
+    public PrepareGameVsComputerResponse? Response { get; set; }
 
-        public async Task HandleValidSubmit()
+    private void ToggleSpeedGame(ChangeEventArgs e)
+    {
+        if (e.Value is bool isSpeedGame)
         {
-            var client = Http.CreateClient("prepare-game");
-            var response = await client.PostAsJsonAsync("prepare-game", Request);
-            if (response.IsSuccessStatusCode)
-            {
-                Response = await response.Content.ReadFromJsonAsync<PrepareGameResponse>();
-            }
+            prepareGameRequest.IsSpeedGame = isSpeedGame; // Set model property
+            Console.WriteLine($"IsSpeedGame: {isSpeedGame}, isDiv1Hidden: {isDiv1Hidden}"); // Debug logging
+
+        }
+    }
+
+    public async Task HandleValidSubmit()
+    {
+        Logger.LogInformation($"Form submitted with values: {prepareGameRequest}");
+
+        if (prepareGameRequest.IsSpeedGame && prepareGameRequest.Timer <= 0)
+        {
+            Logger.LogWarning("Timer value must be greater than 0 for Speed Game.");
+            return;
         }
 
+        Logger.LogInformation($"Submitting game preparation request: {prepareGameRequest}");
+
+        try
+        {
+            var client = Http.CreateClient("prepare-gamevscomputer");
+            if (client == null)
+            {
+                Logger.LogError("Client is null");
+                return;
+            }
+            var response = await client.PostAsJsonAsync("prepare-gamevscomputer", prepareGameRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Response = await response.Content.ReadFromJsonAsync<PrepareGameVsComputerResponse>();
+                Logger.LogInformation("Game prepared successfully.");
+                Navigation.NavigateTo($"/set-game/{Response?.Data.GameId}");
+            }
+            else
+            {
+                Logger.LogError($"Failed to prepare game. Status Code: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Exception occurred: {ex.Message}");
+        }
+    }
 }
