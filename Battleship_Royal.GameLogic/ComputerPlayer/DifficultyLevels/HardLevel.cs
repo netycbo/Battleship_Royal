@@ -1,11 +1,13 @@
 ﻿using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.Interfaces;
 using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
+using Battleship_Royal.GameLogic.GameBoard;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
 using System.ComponentModel;
 using static Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.BfsAlgorithm;
 
 namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels
 {
-    public class HardLevel(Random random, IBfsAlgorithm bfs, IGameBoard gameBoard, IGenerateRandomCoordinates generatCoordinates) : IDifficultyStrategy
+    public class HardLevel(Random random, IBfsAlgorithm bfs, IGameBoardServices gameBoard, IGenerateRandomCoordinates generatCoordinates) : IDifficultyStrategy
     {
         public int BfsAlgorithm()
         {

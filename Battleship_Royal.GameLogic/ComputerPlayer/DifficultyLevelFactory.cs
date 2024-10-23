@@ -3,21 +3,23 @@ using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServi
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices;
 using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
 
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
+
 namespace Battleship_Royal.GameLogic.ComputerPlayer
 {
     public class DifficultyLevelFactory
     {
         Random random;
-        IGameBoard gameBoard;
+        IGameBoardServices gameBoard;
         IBfsAlgorithm bfs;
         IGenerateRandomCoordinates generateCoordinates;
 
         public DifficultyLevelFactory()
         {
-            random = new Random(); // Create a new instance of Random
-            gameBoard = new GameBoard();
-            bfs = new BfsAlgorithm(gameBoard); // Create a new instance of IBfsAlgorithm
-            generateCoordinates = new GenerateRandomCoordinates(random); // Create a new instance of IGenerateRandomCoordinates
+            random = new Random(); 
+            gameBoard = new GameBoardServices();
+            bfs = new BfsAlgorithm(gameBoard); 
+            generateCoordinates = new GenerateRandomCoordinates(random); 
         }
 
         public IDifficultyStrategy GetStrategy(int difficultyLevel)

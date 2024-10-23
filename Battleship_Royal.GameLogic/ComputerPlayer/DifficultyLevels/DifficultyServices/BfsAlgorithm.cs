@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.Interfaces;
+using Battleship_Royal.GameLogic.GameBoard;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
 
 namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices
 {
-    public class BfsAlgorithm(IGameBoard gameBoard) : IBfsAlgorithm
+    public class BfsAlgorithm(IGameBoardServices gameBoard) : IBfsAlgorithm
     {
         public struct Target
         {

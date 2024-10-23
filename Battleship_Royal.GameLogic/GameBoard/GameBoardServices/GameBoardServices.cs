@@ -1,22 +1,10 @@
-﻿namespace Battleship_Royal.GameLogic
+﻿namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
 {
-    public class GameBoard : IGameBoard
+    public class GameBoardServices : IGameBoardServices
     {
+        private const int MaxCells = 40;
         private Cell[,] board;
         private List<Ship> ships;
-
-        public GameBoard()
-        {
-            board = new Cell[10, 10];
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    board[i, j] = new Cell();
-                }
-            }
-        }
-
         public void PlaceShip(List<(int Row, int Col)> coordinates)
         {
             List<Cell> segments = new List<Cell>();
@@ -39,8 +27,6 @@
                 segment.HasShip = true;
             }
         }
-
-
         public bool Attack(int row, int col)
         {
             if (board[row, col].IsHit)
@@ -59,21 +45,61 @@
 
                     Console.WriteLine("Statek został zatopiony!");
                 }
-
                 return true;
             }
-
             return false;
         }
 
-        private bool IsValidPlacement(int row, int col)
+        public bool IsValidPlacement(int row, int col)
         {
             if (row < 0 || row >= 10 || col < 0 || col >= 10 || board[row, col].HasShip)
             {
                 return false;
             }
 
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    int newRow = row + i;
+                    int newCol = col + j;
+
+                    if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10)
+                    {
+                        if (board[newRow, newCol].HasShip)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
             return true;
+        }
+        public int GetShipsCount()
+        {
+            int count = 0;
+            foreach (var cell in board)
+            {
+                if (cell.HasShip)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+        public int GetHitsCount()
+        {
+            int count = 0;
+            foreach (var cell in board)
+            {
+                if (cell.IsHit)
+                {
+                    count++;
+                }
+            }
+            return count;
         }
     }
 }
+
