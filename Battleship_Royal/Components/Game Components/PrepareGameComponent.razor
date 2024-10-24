@@ -23,7 +23,7 @@
         <InputNumber class="form-control" id="difficulty level" name="difficulty level" @bind-Value="prepareGameRequest.DifficultyLevel" />
     </div>
 
-    @if (prepareGameRequest.IsSpeedGame) // Updated to use model directly
+    @if (prepareGameRequest.IsSpeedGame) 
     {
         <div class="form-group">
             <label for="timer">Timer</label>
@@ -35,7 +35,7 @@
 </EditForm>
 
 @code {
-    private bool isDiv1Hidden = false; // Starts with false
+    private bool isDiv1Hidden = false; 
     public PrepareGameVsComputerRequest prepareGameRequest { get; set; } = new PrepareGameVsComputerRequest();
     public PrepareGameVsComputerResponse? Response { get; set; }
 
@@ -43,8 +43,8 @@
     {
         if (e.Value is bool isSpeedGame)
         {
-            prepareGameRequest.IsSpeedGame = isSpeedGame; // Set model property
-            Console.WriteLine($"IsSpeedGame: {isSpeedGame}, isDiv1Hidden: {isDiv1Hidden}"); // Debug logging
+            prepareGameRequest.IsSpeedGame = isSpeedGame; 
+            Console.WriteLine($"IsSpeedGame: {isSpeedGame}, isDiv1Hidden: {isDiv1Hidden}"); 
 
         }
     }

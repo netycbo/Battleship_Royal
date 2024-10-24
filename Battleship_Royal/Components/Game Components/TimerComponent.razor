@@ -1,0 +1,38 @@
+﻿
+@implements IDisposable
+
+<div >
+    Czas do końca rozgrywki: @formattedTime
+</div>
+
+@code {
+    [Parameter]
+    public int InitialTime { get; set; }
+    private Timer _timer;
+    private int _timeRemaining = 300; 
+    private string formattedTime => $"{_timeRemaining / 60:D2}:{_timeRemaining % 60:D2}";
+
+    protected override void OnInitialized()
+    {
+        _timeRemaining = InitialTime; 
+        _timer = new Timer(UpdateTimer, null, 0, 1000);
+    }
+
+    private void UpdateTimer(object state)
+    {
+        if (_timeRemaining > 0)
+        {
+            _timeRemaining--;
+            InvokeAsync(StateHasChanged); 
+        }
+        else
+        {
+            _timer.Dispose(); 
+        }
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose(); 
+    }
+}
