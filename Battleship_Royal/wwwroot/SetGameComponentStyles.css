@@ -1,0 +1,45 @@
+﻿
+.containerGame {
+    display: grid;
+    grid-template-columns: 2fr 1fr; 
+    gap: 20px;
+    padding: 30px;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    border: 2px solid black;
+    width: 700px; 
+    height: 700px; 
+}
+
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-right: 10px;
+   
+}
+
+.button-row {
+    display: flex;
+    justify-content: space-between; 
+    margin-bottom: 10px; 
+    gap: 20px;
+}
+
+.add-ship-button, .start-game-button {
+    padding: 10px 20px; 
+    border: 2px solid black; 
+    cursor: pointer; 
+}
+
+.timer, .player-stats, .computer-stats, .player-turn, .computer-turn {
+    border: 2px solid black;
+    padding: 10px;
+    text-align: center;
+    height: 97px;
+    text-align: center;
+}
