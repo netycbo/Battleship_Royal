@@ -3,7 +3,6 @@
     public class GameBoardServices : IGameBoardServices
     {
         private const int MaxShips = 15;
-        
         private const int MaxCellPerShip = 5;
         private Cell[,] board;
         private List<Ship> ships = new List<Ship>();
@@ -30,10 +29,13 @@
             ShipValidation(coordinates);
 
             List<Cell> segments = new List<Cell>();
-
+            if (coordinates.Count >= 4 && HasConnectedFour())
+            {
+                throw new Exception("Cannot place a squer ship!");
+            }
             foreach (var (row, col) in coordinates)
             {
-                if (!IsValidPlacement(row, col) || HasConnectedFour())
+                if (!IsValidPlacement(row, col))
                 {
                     throw new Exception($"Invalid placement at ({row}, {col}).");
                 }
@@ -137,7 +139,7 @@
             return true;
         }
            
-        private void ShipValidation(List<(int Row, int Col)> coordinates)
+        public void ShipValidation(List<(int Row, int Col)> coordinates)
         {
             if (coordinates.Count > MaxCellPerShip)
             {
@@ -150,7 +152,7 @@
                 { 4, 2 }, 
                 { 3, 3 }, 
                 { 2, 4 }, 
-                { 1, 5 }  // max 5 schips with size of 1 cell
+                { 1, 5 }  // max 5 ships with size of 1 cell
             };
 
             int shipSize = coordinates.Count;
@@ -183,37 +185,50 @@
                 }
             }
         }
-        private bool HasConnectedFour()
+        public bool HasConnectedFour()
         {
             for (int r = 0; r < 10; r++)
             {
-                for (int c = 0; c < 7; c++)
+                for (int c = 0; c <= 6; c++)
                 {
-                    if (!board[r, c].HasShip &&
-                        !board[r, c + 1].HasShip &&
-                        !board[r, c + 2].HasShip &&
-                        !board[r, c + 3].HasShip)
+                    if (board[r, c].HasShip &&
+                        board[r, c + 1].HasShip &&
+                        board[r, c + 2].HasShip &&
+                        board[r, c + 3].HasShip)
                     {
-                        return true; 
+                        return true;
                     }
                 }
             }
 
             for (int c = 0; c < 10; c++)
             {
-                for (int r = 0; r < 7; r++) 
+                for (int r = 0; r <= 6; r++)
                 {
-                    if (!board[r, c].HasShip &&
-                        !board[r + 1, c].HasShip &&
-                        !board[r + 2, c].HasShip &&
-                        !board[r + 3, c].HasShip)
+                    if (board[r, c].HasShip &&
+                        board[r + 1, c].HasShip &&
+                        board[r + 2, c].HasShip &&
+                        board[r + 3, c].HasShip)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            for (int r = 0; r < 9; r++) 
+            {
+                for (int c = 0; c < 9; c++) 
+                {
+                    if (board[r, c].HasShip &&
+                        board[r, c + 1].HasShip &&
+                        board[r + 1, c].HasShip &&
+                        board[r + 1, c + 1].HasShip)
                     {
                         return true; 
                     }
                 }
             }
-
-            return false; 
+            return false;
         }
     }
 
