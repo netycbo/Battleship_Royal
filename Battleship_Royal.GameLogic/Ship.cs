@@ -10,7 +10,7 @@
             Segments = segments;
             Coordinates = coordinates;
         }
-
+        
         public bool IsSunk()
         {
             return Segments.All(segment => segment.IsHit);

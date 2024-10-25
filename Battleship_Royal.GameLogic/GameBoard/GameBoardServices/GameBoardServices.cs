@@ -6,7 +6,7 @@
         private const int MaxCellPerShip = 5;
         private Cell[,] board;
         private List<Ship> ships = new List<Ship>();
-      
+
         public GameBoardServices()
         {
             board = new Cell[10, 10];
@@ -89,7 +89,7 @@
             {
                 return false;
             }
-            
+
             return true;
         }
         public int GetShipsCount()
@@ -134,11 +134,11 @@
                             return false;
                         }
                     }
-                }   
+                }
             }
             return true;
         }
-           
+
         public void ShipValidation(List<(int Row, int Col)> coordinates)
         {
             if (coordinates.Count > MaxCellPerShip)
@@ -148,10 +148,10 @@
 
             var shipSizeCounts = new Dictionary<int, int>
             {
-                { 5, 1 }, 
-                { 4, 2 }, 
-                { 3, 3 }, 
-                { 2, 4 }, 
+                { 5, 1 },
+                { 4, 2 },
+                { 3, 3 },
+                { 2, 4 },
                 { 1, 5 }  // max 5 ships with size of 1 cell
             };
 
@@ -187,49 +187,68 @@
         }
         public bool HasConnectedFour()
         {
+
             for (int r = 0; r < 10; r++)
             {
-                for (int c = 0; c <= 6; c++)
+                int consecutiveShips = 0;
+                for (int c = 0; c < 10; c++)
                 {
-                    if (board[r, c].HasShip &&
-                        board[r, c + 1].HasShip &&
-                        board[r, c + 2].HasShip &&
-                        board[r, c + 3].HasShip)
+                    if (board[r, c].HasShip)
                     {
-                        return true;
+                        consecutiveShips++;
+                    }
+                    else
+                    {
+                        if (consecutiveShips > 5) // Zwraca błąd tylko, jeśli jest więcej niż 5 połączone statki
+                        {
+                            return true;
+                        }
+                        consecutiveShips = 0;
                     }
                 }
+                if (consecutiveShips > 5) return true; // Sprawdzenie na końcu wiersza
             }
 
+            // Sprawdzenie pionowe
             for (int c = 0; c < 10; c++)
             {
-                for (int r = 0; r <= 6; r++)
+                int consecutiveShips = 0;
+                for (int r = 0; r < 10; r++)
                 {
-                    if (board[r, c].HasShip &&
-                        board[r + 1, c].HasShip &&
-                        board[r + 2, c].HasShip &&
-                        board[r + 3, c].HasShip)
+                    if (board[r, c].HasShip)
                     {
-                        return true;
+                        consecutiveShips++;
+                    }
+                    else
+                    {
+                        if (consecutiveShips > 5)
+                        {
+                            return true;
+                        }
+                        consecutiveShips = 0;
                     }
                 }
+                if (consecutiveShips > 5) return true; 
             }
 
-            for (int r = 0; r < 9; r++) 
+            // Sprawdzenie kwadratów 2x2
+            for (int r = 0; r < 9; r++)
             {
-                for (int c = 0; c < 9; c++) 
+                for (int c = 0; c < 9; c++)
                 {
                     if (board[r, c].HasShip &&
                         board[r, c + 1].HasShip &&
                         board[r + 1, c].HasShip &&
                         board[r + 1, c + 1].HasShip)
                     {
-                        return true; 
+                        return true;
                     }
                 }
             }
+
             return false;
         }
+
     }
 
 }

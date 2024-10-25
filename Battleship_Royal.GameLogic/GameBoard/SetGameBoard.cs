@@ -1,7 +1,4 @@
-﻿
-
-using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
-using System.Collections.Generic;
+﻿using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
 
 namespace Battleship_Royal.GameLogic
 {
