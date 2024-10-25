@@ -1,64 +1,54 @@
 ﻿
 
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
+using System.Collections.Generic;
 
 namespace Battleship_Royal.GameLogic
 {
-    public class SetGameBoard()
+    public class SetGameBoard
     {
         private IGameBoardServices gameBoardServices;
         private Cell[,] board;
         private List<Ship> ships;
 
-        public SetGameBoard(IGameBoardServices gameBoardServices) : this()
+        public SetGameBoard(IGameBoardServices gameBoardServices) 
         {
-            board = new Cell[10, 10];
+            board = gameBoardServices.Board;
             ships = new List<Ship>();
-            gameBoardServices = gameBoardServices; 
-            InitializeBoard();
+            this.gameBoardServices = gameBoardServices; 
+            
         }
 
         public Cell[,] Board => board;
-
-        private void InitializeBoard()
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    board[i, j] = new Cell();
-                }
-            }
-        }
-
+           
         public void PlaceShip(List<(int Row, int Col)> coordinates)
         {
-            if (GetShipsCount() + coordinates.Count > 40)
+            if (GetShipsCount() + coordinates.Count > 35)
             {
                 throw new Exception("Exceeded maximum number of ship cells (40).");
             }
 
-            gameBoardServices.PlaceShip(coordinates); // Delegate to GameBoardServices
+            gameBoardServices.PlaceShip(coordinates); 
         }
 
         public bool Attack(int row, int col)
         {
-            return gameBoardServices.Attack(row, col); // Delegate to GameBoardServices
+            return gameBoardServices.Attack(row, col); 
         }
 
         public bool IsValidPlacement(int row, int col)
         {
-            return gameBoardServices.IsValidPlacement(row, col); // Delegate to GameBoardServices
+            return gameBoardServices.IsValidPlacement(row, col);
         }
 
         public int GetShipsCount()
         {
-            return gameBoardServices.GetShipsCount(); // Delegate to GameBoardServices
+            return gameBoardServices.GetShipsCount(); 
         }
 
         public int GetHitsCount()
         {
-            return gameBoardServices.GetHitsCount(); // Delegate to GameBoardServices
+            return gameBoardServices.GetHitsCount(); 
         }
     }
 }

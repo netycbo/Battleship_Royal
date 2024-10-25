@@ -3,7 +3,7 @@
     public class Ship
     {
         public List<Cell> Segments { get; private set; }
-        public List<(int Row, int Col)> Coordinates { get; private set; } // To hold coordinates for non-linear shapes
+        public List<(int Row, int Col)> Coordinates { get; private set; } 
 
         public Ship(List<Cell> segments, List<(int Row, int Col)> coordinates)
         {
