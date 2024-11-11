@@ -1,10 +1,12 @@
 ﻿using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
 
 namespace Battleship_Royal.GameLogic
 {
     public class SetGameBoard
     {
         private IGameBoardServices gameBoardServices;
+        private IShipValidator shipValidator;
         private Cell[,] board;
         private List<Ship> ships;
 
@@ -22,20 +24,20 @@ namespace Battleship_Royal.GameLogic
         {
             if (GetShipsCount() + coordinates.Count > 35)
             {
-                throw new Exception("Exceeded maximum number of ship cells (40).");
+                throw new Exception("Exceeded maximum number of ship cells (35).");
             }
 
             gameBoardServices.PlaceShip(coordinates); 
         }
 
-        public bool Attack(int row, int col)
-        {
-            return gameBoardServices.Attack(row, col); 
-        }
+        //public bool Attack(int row, int col)
+        //{
+        //    return gameBoardServices.Attack(row, col); 
+        //}
 
         public bool IsValidPlacement(int row, int col)
         {
-            return gameBoardServices.IsValidPlacement(row, col);
+            return shipValidator.IsValidPlacement(row, col);
         }
 
         public int GetShipsCount()
