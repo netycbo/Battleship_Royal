@@ -8,13 +8,17 @@ using Battleship_Royal.Api.Handlers.Services.Interfaces;
 using Battleship_Royal.Api.Handlers.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
-using Battleship_Royal.GameLogic;
 using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
 
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.Interfaces;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices;
-using Battleship_Royal.Api.SignalR;
+
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
+using Battleship_Royal.GameLogic;
+using Battleship_Royal.Data.Services.GameServices.Helpers;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,10 +49,20 @@ builder.Services.AddAutoMapper(typeof(Profiles).GetTypeInfo().Assembly, typeof(P
 builder.Services.AddTransient<ISaveGamesServices, SaveGamesServices>();
 builder.Services.AddTransient<IUserIdService, UserIdService>();
 builder.Services.AddTransient<IDeserializeService, DeserializeService>();
-builder.Services.AddTransient<IGameBoard, GameBoard>();
+builder.Services.AddTransient<SetGameBoard>();
+builder.Services.AddTransient<IHasDifferentShape,HasDifferentShape>();
+builder.Services.AddTransient<IGameBoardServices, GameBoardServices>();
+builder.Services.AddTransient<IComputerShipPlacer, ComputerShipPlacer>();
 builder.Services.AddTransient<IDifficultyStrategy, EasyLevel>();
 builder.Services.AddTransient<IGenerateRandomCoordinates, GenerateRandomCoordinates>();
+builder.Services.AddTransient<IBoardInitializer, BoardInitializer>();
+builder.Services.AddTransient<IHasDifferentShape, HasDifferentShape >();
+builder.Services.AddTransient<IShipPlacer, ShipPlacer>();
+builder.Services.AddTransient<IShipValidator, ShipValidator>();
 builder.Services.AddTransient<IBfsAlgorithm, BfsAlgorithm>();
+builder.Services.AddTransient<IBoardInitializer, BoardInitializer>();
+builder.Services.AddTransient<IGameBoardServices, GameBoardServices>();
+builder.Services.AddScoped<IComputerShipPlacer, ComputerShipPlacer>();
 builder.Services.AddScoped<IGenerateJwtToken , GenerateJwtToken>();
 builder.Services.AddScoped<IGenerateRefreshToken, GenerateRefreshToken>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();

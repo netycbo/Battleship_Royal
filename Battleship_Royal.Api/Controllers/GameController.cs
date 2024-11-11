@@ -1,8 +1,5 @@
-﻿using Battleship_Royal.Api.Dtos.Game;
-using Battleship_Royal.Api.Requests;
-using Battleship_Royal.Api.Requests.Game;
+﻿using Battleship_Royal.Api.Requests.Game;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Battleship_Royal.Api.Controllers

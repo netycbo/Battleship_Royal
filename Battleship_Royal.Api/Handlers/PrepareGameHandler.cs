@@ -55,7 +55,7 @@ namespace Battleship_Royal.Api.Handlers
                 var prepareGameReady = mapper.Map<PrepareGameVsComputerDto>(request);
                 prepareGameReady.GameId = gameId;
                 prepareGameReady.DifficultyLevel = difficulty;
-                prepareGameReady.TimeOfEndGame = endTime?.ToString("HH:mm");
+                //prepareGameReady.TimeOfEndGame = endTime?.ToString("HH:mm");
                 gameCacheService.SetGameAsync(gameId, prepareGameReady);
 
                 return new PrepareGameVsComputerResponse
