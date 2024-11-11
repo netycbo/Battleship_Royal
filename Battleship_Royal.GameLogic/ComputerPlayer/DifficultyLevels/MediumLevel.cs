@@ -23,7 +23,7 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels
 
             if (randomInt > 50)
             {
-               return BfsAlgorithm();
+                return BfsAlgorithm();
             }
 
             else

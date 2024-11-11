@@ -4,6 +4,9 @@ using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServi
 using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
 
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
+using Battleship_Royal.Data.Services.GameServices.Helpers;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
 
 namespace Battleship_Royal.GameLogic.ComputerPlayer
 {
@@ -13,13 +16,15 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer
         IGameBoardServices gameBoard;
         IBfsAlgorithm bfs;
         IGenerateRandomCoordinates generateCoordinates;
+        IBoardInitializer boardInitializer;
+        IShipPlacer shipPlacer;
 
         public DifficultyLevelFactory()
         {
-            random = new Random(); 
-            gameBoard = new GameBoardServices();
-            bfs = new BfsAlgorithm(gameBoard); 
-            generateCoordinates = new GenerateRandomCoordinates(random); 
+            random = new Random();
+            gameBoard = new GameBoardServices(boardInitializer, shipPlacer);
+            bfs = new BfsAlgorithm(gameBoard);
+            generateCoordinates = new GenerateRandomCoordinates(random);
         }
 
         public IDifficultyStrategy GetStrategy(int difficultyLevel)

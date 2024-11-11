@@ -26,7 +26,7 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels
             }
             else
             {
-               return RandomMove();
+                return RandomMove();
             }
         }
         public int RandomMove()
@@ -37,6 +37,6 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels
             return row * 10 + col;
         }
 
-        
+
     }
 }

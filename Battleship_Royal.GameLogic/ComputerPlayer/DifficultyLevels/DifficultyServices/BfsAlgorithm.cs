@@ -23,7 +23,7 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyS
             Queue<Target> queue = new Queue<Target>();
             HashSet<Target> visited = new HashSet<Target>();
 
-            queue.Enqueue(new Target(0, 0)); 
+            queue.Enqueue(new Target(0, 0));
 
             while (queue.Count > 0)
             {
@@ -31,7 +31,7 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyS
 
                 if (gameBoard.Attack(current.Row, current.Col))
                 {
-                    return current; 
+                    return current;
                 }
 
                 AddNeighbor(current.Row - 1, current.Col, queue, visited);
@@ -40,7 +40,7 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyS
                 AddNeighbor(current.Row, current.Col + 1, queue, visited);
             }
 
-            return new Target(-1, -1); 
+            return new Target(-1, -1);
         }
 
         private void AddNeighbor(int row, int col, Queue<Target> queue, HashSet<Target> visited)
@@ -56,7 +56,7 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyS
             }
         }
 
-        
+
     }
 }
 

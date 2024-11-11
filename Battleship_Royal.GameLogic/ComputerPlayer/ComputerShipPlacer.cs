@@ -1,12 +1,14 @@
 ﻿using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
 
 namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
 {
-    public class ComputerShipPlacer(IGameBoardServices gameBoardServices) : IComputerShipPlacer
+    public class ComputerShipPlacer(IGameBoardServices gameBoardServices, IShipValidator shipValidator, IHasDifferentShape shapeChecker) : IComputerShipPlacer
     {
         public void PlaceShipsForComputer()
         {
-            var shipSizes = new List<int> { 5, 4, 3, 3, 2, 1 };
+            var shipSizes = new List<int> { 4, 3, 3, 2,2,2, 1,1,1,1 };
 
             foreach (int size in shipSizes)
             {
@@ -20,8 +22,8 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
                     var coordinates = GenerateShipCoordinates(startRow, startCol, size, isHorizontal);
 
                     if (coordinates.Count == size &&
-                        gameBoardServices.AreAdjacentCellsFree(coordinates) &&
-                        !gameBoardServices.HasConnectedFour())
+                        shipValidator.AreAdjacentCellsFree(coordinates) &&
+                        !shapeChecker.IsSquareShape(coordinates));
                     {
                         gameBoardServices.PlaceShip(coordinates);
                         placed = true;
@@ -38,7 +40,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
                 int row = isHorizontal ? startRow : startRow + i;
                 int col = isHorizontal ? startCol + i : startCol;
 
-                if (row < 0 || row >= 10 || col < 0 || col >= 10 || !gameBoardServices.IsValidPlacement(row, col))
+                if (!shipValidator.IsValidPlacement(row, col))
                 {
                     coordinates.Clear();
                     break;
