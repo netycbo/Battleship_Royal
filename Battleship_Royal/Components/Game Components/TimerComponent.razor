@@ -14,10 +14,13 @@
 
     protected override void OnInitialized()
     {
-        _timeRemaining = InitialTime; 
+        _timeRemaining = InitialTime > 0 ? InitialTime : 600;
         _timer = new Timer(UpdateTimer, null, 0, 1000);
     }
-
+    public void StartTimer()
+    {
+        _timer.Change(0, 1000);
+    }
     private void UpdateTimer(object state)
     {
         if (_timeRemaining > 0)
