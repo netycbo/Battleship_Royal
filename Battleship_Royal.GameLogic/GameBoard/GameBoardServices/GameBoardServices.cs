@@ -8,16 +8,16 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
     public class GameBoardServices : IGameBoardServices
     {
 
-        private readonly IBoardInitializer _boardInitializer;
+        
         private readonly IShipPlacer _shipPlacer;
         private Cell[,] _board;
 
         public GameBoardServices(IBoardInitializer boardInitializer, IShipPlacer shipPlacer)
         {
 
-            _boardInitializer = boardInitializer;
+            _board = boardInitializer.InitializeBoard(10, 10);
             _shipPlacer = shipPlacer;
-            _board = _boardInitializer.InitializeBoard(10, 10);
+            _shipPlacer.SetBoard(_board);
         }
         public Cell[,] Board => _board;
 
@@ -26,28 +26,28 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
             _shipPlacer.PlaceShip(coordinates);
         }
 
-        public bool Attack(int row, int col)
-        {
-            if (_board[row, col].IsHit)
-            {
-                return false;
-            }
+        //public bool Attack(int row, int col)
+        //{
+        //    if (_board[row, col].IsHit)
+        //    {
+        //        return false;
+        //    }
 
-            _board[row, col].IsHit = true;
+        //    _board[row, col].IsHit = true;
 
-            if (_board[row, col].HasShip)
-            {
-                Ship hitShip = _shipPlacer.Ships.FirstOrDefault(ship => ship.Segments.Any(segment => segment == _board[row, col]));
+        //    if (_board[row, col].HasShip)
+        //    {
+        //        Ship hitShip = _shipPlacer.Ships.FirstOrDefault(ship => ship.Segments.Any(segment => segment == _board[row, col]));
 
-                if (hitShip != null && hitShip.IsSunk())
-                {
+        //        if (hitShip != null && hitShip.IsSunk())
+        //        {
 
-                    Console.WriteLine("Statek został zatopiony!");
-                }
-                return true;
-            }
-            return false;
-        }
+        //            Console.WriteLine("Statek został zatopiony!");
+        //        }
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         public int GetShipsCount()
         {
@@ -74,7 +74,10 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
             return count;
         }
 
-       
+        public bool Attack(int row, int col)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

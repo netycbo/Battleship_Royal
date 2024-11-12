@@ -30,6 +30,8 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
         {
             foreach (var (row, col) in coordinates)
             {
+                if (Board[row, col] == null)
+                    continue;
 
                 for (int i = -1; i <= 1; i++)
                 {
@@ -41,12 +43,12 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
                         int newCol = col + j;
                         if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10 && Board[newRow, newCol].HasShip)
                         {
-                            return false;
+                            return true;
                         }
                     }
                 }
             }
-            return true;
+            return false;
         }
 
         private bool AreCellsConnected(List<(int Row, int Col)> coordinates)
@@ -95,8 +97,8 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
         }
         public bool IsValidPlacement(int row, int col)
         {
-            if (row < 0 || row >= 10 || col < 0 || col >= 10 || Board[row, col].HasShip)
-            {
+            if (row < 0 || row >= 10 || col < 0 || col >= 10 || Board[row, col] == null || Board[row, col].HasShip)
+            {                  
                 return false;
             }
 

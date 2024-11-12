@@ -1,27 +1,36 @@
 ﻿using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
+
 
 namespace Battleship_Royal.GameLogic
 {
     public class SetGameBoard
     {
-        private IGameBoardServices gameBoardServices;
-        private IShipValidator shipValidator;
-        private Cell[,] board;
-        private List<Ship> ships;
+        private readonly IGameBoardServices gameBoardServices;
+        private readonly IShipValidator shipValidator;
+        private readonly Cell[,] board;
+        private readonly List<Ship> ships;
 
-        public SetGameBoard(IGameBoardServices gameBoardServices) 
+        public SetGameBoard(IGameBoardServices gameBoardServices, IBoardInitializer boardInitializer, IShipValidator shipValidator)
         {
-            board = gameBoardServices.Board;
-            ships = new List<Ship>();
-            this.gameBoardServices = gameBoardServices; 
             
+            this.board = boardInitializer.InitializeBoard(10, 10);
+            this.ships = new List<Ship>();
+            this.gameBoardServices = gameBoardServices;
+            this.shipValidator = shipValidator;
         }
-
         public Cell[,] Board => board;
            
         public void PlaceShip(List<(int Row, int Col)> coordinates)
         {
+            foreach(var coordinate in coordinates)
+            {
+                if(!IsValidPlacement(coordinate.Col, coordinate.Row))
+                {
+                    throw new Exception("invalid placment");
+                }
+            }
             if (GetShipsCount() + coordinates.Count > 35)
             {
                 throw new Exception("Exceeded maximum number of ship cells (35).");

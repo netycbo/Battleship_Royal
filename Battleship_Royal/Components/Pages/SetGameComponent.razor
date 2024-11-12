@@ -1,6 +1,12 @@
 ﻿@page "/set-game/{gameId}"
-@using Battleship_Royal.GameLogic.GameBoard.GameBoardServices
+@using Battleship_Royal.Data.Services.GameServices.Helpers
+@using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
+@using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces
+@inject IBoardInitializer boardInitializer
 @inject IGameBoardServices boardServices
+@inject IComputerShipPlacer computerShipPlacer
+@inject IShipValidator shipValidator
+
 @rendermode InteractiveServer
 
 <h3>Set Your Ships</h3>
@@ -24,11 +30,12 @@
 
     <div class="side-panel">
         <div class="button-row">
-            <button class="add-ship-button" @onclick="AddShip">Add Ship</button>
-            <button class="start-game-button">Start Game</button>
+            <button class="add-ship-button" style="visibility: @(ships.Count < 10 ? "visible" : "hidden")" @onclick="AddShip">Add Ship</button>
+            <button class="fire-button" style="visibility: @(computerShipsPlaced ? "visible" : "hidden")" @onclick="FireHandle">Fire</button>
+            <button class="start-game-button" style="visibility: @(ships.Count == 10 ? "visible" : "hidden")" @onclick="StartGame">Start Game</button>
         </div>
-        <div class="timer">
-            Czas do końca rozgrywki: mm:ss
+        <div class="timer" style="visibility:@(computerShipsPlaced ? "visible" : "hidden")">
+            <TimerComponent InitialTime="Response.Data.Timer"> </TimerComponent>
         </div>
         <div class="player-stats">
             Trafienia gracza - % zatopionych statków
@@ -52,14 +59,30 @@
 }
 
 @code {
+
+    public PrepareGameVsComputerResponse Response { get; set; } = new PrepareGameVsComputerResponse();
     public SetGameBoard Board { get; set; }
+    public SetGameBoard ComputerBoard { get; set; }
+    public ComputerShipPlacer ComputerShipPlacer { get; set; }
 
     protected override void OnInitialized()
     {
-        Board = new SetGameBoard(boardServices);
-        // ships = new List<Ship>();
-    }
+        Board = new SetGameBoard(boardServices, boardInitializer, shipValidator);
+        ComputerBoard = new SetGameBoard(boardServices, boardInitializer, shipValidator);
+       
+        Response = new PrepareGameVsComputerResponse
+            {
+                Data = new PrepareGameVsComputerDto
+                {
+                    Timer = 600 
+                }
+            };
 
+    }
+    private void HandleShipPlaced(object sender, EventArgs e)
+    {
+        StateHasChanged();
+    }
     [Parameter]
     public string GameId { get; set; }
     private List<Cell> Segments = new List<Cell>();
@@ -67,6 +90,7 @@
     private string? errorMessage;
     private HashSet<(int Row, int Col)> selectedCells = new HashSet<(int Row, int Col)>();
     private List<Ship> ships = new List<Ship>();
+    private bool computerShipsPlaced = false;
 
     private void OnCellClick(int row, int col)
     {
@@ -77,14 +101,14 @@
             errorMessage = "This cell is already occupied. Choose another cell.";
             return;
         }
-        // var potentialCoordinates = new List<(int Row, int Col)>(shipCoordinates) { (row, col) };
-        
-        // if (!boardServices.AreAdjacentCellsFree(potentialCoordinates))
-        // {
-        //     errorMessage = "Invalid placement. Choose another cell.";
-        //     return;
-        // }
-        
+        var potentialCoordinates = new List<(int Row, int Col)>(shipCoordinates) { (row, col) };
+
+        if (shipValidator.AreAdjacentCellsFree(potentialCoordinates))
+        {
+            errorMessage = "Invalid placement. Choose another cell.";
+            return;
+        }
+
 
         if (selectedCells.Contains((row, col)))
         {
@@ -96,10 +120,18 @@
             selectedCells.Add((row, col));
             shipCoordinates.Add((row, col));
         }
-
         StateHasChanged(); 
     }
+    private void StartGame()
+    {
+        computerShipPlacer.PlaceShipsForComputer();
+        computerShipsPlaced = true;
+        selectedCells.Clear();
+        shipCoordinates.Clear();
 
+        StateHasChanged();
+      
+    }
     private void AddShip()
     {
         if (shipCoordinates.Count == 0)
@@ -107,10 +139,12 @@
             errorMessage = "You must select at least one cell to place a ship.";
             return;
         }
-
         try
         {
             Board.PlaceShip(shipCoordinates);
+            var newship = new Ship(Segments, shipCoordinates);
+            ships.Add(newship);
+            Console.WriteLine($"Ships count: {ships.Count}");
             errorMessage = null;
             shipCoordinates.Clear();
             selectedCells.Clear(); 
@@ -121,9 +155,13 @@
             errorMessage = ex.Message;
         }
     }
-
     private bool IsCellSelected(int row, int col)
     {
         return selectedCells.Contains((row, col));
     }
+    private void FireHandle()
+    {
+        Console.WriteLine("Fire");
+    }
+    
 }
