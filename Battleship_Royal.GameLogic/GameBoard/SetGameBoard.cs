@@ -20,13 +20,13 @@ namespace Battleship_Royal.GameLogic
             this.gameBoardServices = gameBoardServices;
             this.shipValidator = shipValidator;
         }
-        public Cell[,] Board => board;
+        public Cell[,] Board => gameBoardServices.Board;
            
         public void PlaceShip(List<(int Row, int Col)> coordinates)
         {
             foreach(var coordinate in coordinates)
             {
-                if(!IsValidPlacement(coordinate.Col, coordinate.Row))
+                if(IsValidPlacement(coordinate.Col, coordinate.Row))
                 {
                     throw new Exception("invalid placment");
                 }

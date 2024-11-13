@@ -4,15 +4,15 @@ using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServi
 using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
 
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
-using Battleship_Royal.Data.Services.GameServices.Helpers;
-using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
 
 namespace Battleship_Royal.GameLogic.ComputerPlayer
 {
     public class DifficultyLevelFactory
     {
         Random random;
+        IShipValidator shipValidator;
         IGameBoardServices gameBoard;
         IBfsAlgorithm bfs;
         IGenerateRandomCoordinates generateCoordinates;
@@ -22,7 +22,7 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer
         public DifficultyLevelFactory()
         {
             random = new Random();
-            gameBoard = new GameBoardServices(boardInitializer, shipPlacer);
+            gameBoard = new GameBoardServices(boardInitializer, shipPlacer, shipValidator);
             bfs = new BfsAlgorithm(gameBoard);
             generateCoordinates = new GenerateRandomCoordinates(random);
         }

@@ -4,6 +4,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
 {
     public class ShipValidator : IShipValidator
     {
+        private Cell[,] _board;
         private const int MaxCellPerShip = 4;
         private Cell[,] Board;
         private readonly IHasDifferentShape shapeChecker;
@@ -13,7 +14,10 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
             this.Board = board;
             this.shapeChecker = shapeChecker;
         }
-
+        public void SetBoard(Cell[,] board)
+        {
+            _board = board;
+        }
         public void ValidateShipPlacement(List<(int Row, int Col)> coordinates, List<Ship> existingShips)
         {
             if (coordinates.Count > 4)
