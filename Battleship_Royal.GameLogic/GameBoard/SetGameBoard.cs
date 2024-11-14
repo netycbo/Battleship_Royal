@@ -9,14 +9,9 @@ namespace Battleship_Royal.GameLogic
     {
         private readonly IGameBoardServices gameBoardServices;
         private readonly IShipValidator shipValidator;
-        private readonly Cell[,] board;
-        private readonly List<Ship> ships;
-
+       
         public SetGameBoard(IGameBoardServices gameBoardServices, IBoardInitializer boardInitializer, IShipValidator shipValidator)
-        {
-            
-            this.board = boardInitializer.InitializeBoard(10, 10);
-            this.ships = new List<Ship>();
+        {         
             this.gameBoardServices = gameBoardServices;
             this.shipValidator = shipValidator;
         }
@@ -24,13 +19,13 @@ namespace Battleship_Royal.GameLogic
            
         public void PlaceShip(List<(int Row, int Col)> coordinates)
         {
-            foreach(var coordinate in coordinates)
-            {
-                if(IsValidPlacement(coordinate.Col, coordinate.Row))
-                {
-                    throw new Exception("invalid placment");
-                }
-            }
+            //foreach(var coordinate in coordinates)
+            //{
+            //    if(!IsValidPlacement(coordinate.Col, coordinate.Row))
+            //    {
+            //        throw new Exception("invalid placment");
+            //    }
+            //}
             if (GetShipsCount() + coordinates.Count > 35)
             {
                 throw new Exception("Exceeded maximum number of ship cells (35).");
@@ -44,19 +39,27 @@ namespace Battleship_Royal.GameLogic
         //    return gameBoardServices.Attack(row, col); 
         //}
 
-        public bool IsValidPlacement(int row, int col)
-        {
-            return shipValidator.IsValidPlacement(row, col);
-        }
+        //public bool IsValidPlacement(int row, int col)
+        //{
+        //    return shipValidator.AreAdjacentCellsFree(new List<(int, int)> { (row, col) });
+        //}
 
         public int GetShipsCount()
         {
-            return gameBoardServices.GetShipsCount(); 
+            return gameBoardServices.GetShipsCount();
         }
 
         public int GetHitsCount()
         {
             return gameBoardServices.GetHitsCount(); 
+        }
+        public Cell GetCell(int row, int col)
+        {
+            if (row < 0 || row >= Board.GetLength(0) || col < 0 || col >= Board.GetLength(1))
+            {
+                throw new ArgumentOutOfRangeException("Podane współrzędne są poza zakresem planszy.");
+            }
+            return Board[row, col];
         }
     }
 }

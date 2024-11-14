@@ -5,17 +5,20 @@ using Battleship_Royal.GameLogic;
 public class ShipPlacer : IShipPlacer
 {
     private Cell[,] _board;
-    private readonly List<Ship> _ships;
-    private readonly IShipValidator _validator;
+    private List<Ship> _ships;
+    private readonly ICheckShipPlacement _validator;
 
-    public ShipPlacer(IBoardInitializer boardInitializer, IShipValidator validator)
+    public ShipPlacer(IBoardInitializer boardInitializer, ICheckShipPlacement validator)
     {
-        _ships = new List<Ship>();
         _validator = validator;
     }
     public void SetBoard(Cell[,] board)
     {
         _board = board;
+    }
+    public void SetShips(List<Ship> ships)
+    {
+        _ships = ships;
     }
 
     public void PlaceShip(List<(int Row, int Col)> coordinates)

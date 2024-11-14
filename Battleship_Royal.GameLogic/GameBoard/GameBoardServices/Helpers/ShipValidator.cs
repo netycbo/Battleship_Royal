@@ -6,56 +6,57 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
     {
         private Cell[,] _board;
         private const int MaxCellPerShip = 4;
-        private Cell[,] Board;
         private readonly IHasDifferentShape shapeChecker;
-         private List<Ship> ships = new List<Ship>();
+        private List<Ship> _ships;
         public ShipValidator(Cell[,] board, IHasDifferentShape shapeChecker)
         {
-            this.Board = board;
+            _board = board;
             this.shapeChecker = shapeChecker;
+            _ships = new List<Ship>();
         }
         public void SetBoard(Cell[,] board)
         {
             _board = board;
         }
-        public void ValidateShipPlacement(List<(int Row, int Col)> coordinates, List<Ship> existingShips)
+        public void SetShips(List<Ship> ships)
         {
-            if (coordinates.Count > 4)
-                throw new Exception("Cannot place ship with more than 4 cells.");
-
-            if (coordinates.Count == 4 && shapeChecker.IsSquareShape(coordinates))
-            {
-                throw new Exception("Cannot place square ship.");
-            }
-            if (!AreCellsConnected(coordinates))
-                throw new Exception("There must be no gaps between selected cells.");
+            _ships = ships;
         }
+
         public bool AreAdjacentCellsFree(List<(int Row, int Col)> coordinates)
         {
+
             foreach (var (row, col) in coordinates)
             {
-                if (Board[row, col] == null)
-                    continue;
+                if (_board[row, col] != null && _board[row, col].HasShip)
+                {
+                    return false;
+                }
 
                 for (int i = -1; i <= 1; i++)
                 {
                     for (int j = -1; j <= 1; j++)
                     {
-                        if (i == 0 && j == 0) continue;
+                        if (i == 0 && j == 0) continue; 
 
                         int newRow = row + i;
                         int newCol = col + j;
-                        if (newRow >= 0 && newRow < 10 && newCol >= 0 && newCol < 10 && Board[newRow, newCol].HasShip)
+
+                        if (newRow >= 0 && newRow < _board.GetLength(0) && newCol >= 0 && newCol < _board.GetLength(1))
                         {
-                            return true;
+                            var adjacentCell = _board[newRow, newCol];
+                            if (adjacentCell == null || adjacentCell.HasShip)
+                            {
+                                return false;
+                            }
                         }
                     }
                 }
             }
-            return false;
+            return true;
         }
 
-        private bool AreCellsConnected(List<(int Row, int Col)> coordinates)
+        public bool AreCellsConnected(List<(int Row, int Col)> coordinates)
         {
             coordinates = coordinates.OrderBy(c => c.Row).ThenBy(c => c.Col).ToList();
             for (int i = 1; i < coordinates.Count; i++)
@@ -83,14 +84,14 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
 
             int shipSize = coordinates.Count;
 
-            int currentCount = ships.Count(s => s.Segments.Count == shipSize);
+            int currentCount = _ships.Count(s => s.Segments.Count == shipSize);
             if (shipSizeCounts.ContainsKey(shipSize) && currentCount >= shipSizeCounts[shipSize])
             {
                 throw new Exception($"Cannot place more than {shipSizeCounts[shipSize]} ships with {shipSize} cells.");
             }
             foreach (var size in shipSizeCounts.Keys)
             {
-                int placedShipsOfSize = ships.Count(s => s.Segments.Count == size);
+                int placedShipsOfSize = _ships.Count(s => s.Segments.Count == size);
                 int remainingShipsOfSize = shipSizeCounts[size] - placedShipsOfSize;
 
                 if (remainingShipsOfSize > 0)
@@ -101,7 +102,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
         }
         public bool IsValidPlacement(int row, int col)
         {
-            if (row < 0 || row >= 10 || col < 0 || col >= 10 || Board[row, col] == null || Board[row, col].HasShip)
+            if (row < 0 || row >= 10 || col < 0 || col >= 10 || _board[row, col] == null || _board[row, col].HasShip)
             {                  
                 return false;
             }
