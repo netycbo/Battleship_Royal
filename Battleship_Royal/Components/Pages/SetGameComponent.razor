@@ -11,21 +11,23 @@
 
 <h3>Set Your Ships</h3>
 
-<div class="containerGame">
-    <div class="game-board">
-        @for (int row = 0; row < 10; row++)
-        {
-            @for (int col = 0; col < 10; col++)
+<div class="game-container">
+    <div class="containerGame">
+        <div class="game-board">
+            @for (int row = 0; row < 10; row++)
             {
-                var currentRow = row;
-                var currentCol = col;
-                var cell = Board.Board[currentRow, currentCol];
+                @for (int col = 0; col < 10; col++)
+                {
+                    var currentRow = row;
+                    var currentCol = col;
+                    var cell = Board.GetCell(currentRow, currentCol);
 
-                <div class="cell @(cell.HasShip ? "ship" : "") @(IsCellSelected(currentRow, currentCol) ? "selected" : "")"
-                     @onclick="() => OnCellClick(currentRow, currentCol)">
-                </div>
+                    <div class="cell @(cell.HasShip ? "ship" : "") @(IsCellSelected(currentRow, currentCol) ? "selected" : "")"
+                         @onclick="() => OnCellClick(currentRow, currentCol)">
+                    </div>
+                }
             }
-        }
+        </div>
     </div>
 
     <div class="side-panel">
@@ -34,18 +36,19 @@
             <button class="fire-button" style="visibility: @(computerShipsPlaced ? "visible" : "hidden")" @onclick="FireHandle">Fire</button>
             <button class="start-game-button" style="visibility: @(ships.Count == 10 ? "visible" : "hidden")" @onclick="StartGame">Start Game</button>
         </div>
+
         <div class="timer" style="visibility:@(computerShipsPlaced ? "visible" : "hidden")">
             <TimerComponent InitialTime="Response.Data.Timer"> </TimerComponent>
         </div>
-        <div class="player-stats">
-            Trafienia gracza - % zatopionych statków
-        </div>
+
         <div class="computer-stats">
             Trafienia komputera - % zatopionych statków
         </div>
+
         <div class="player-turn">
             Ruch gracza - zmiana koloru jeśli jest kolej gracza
         </div>
+
         <div class="computer-turn">
             Ruch komputera - zmiana koloru jeśli jest kolej komputera
         </div>
@@ -69,7 +72,7 @@
     {
         Board = new SetGameBoard(boardServices, boardInitializer, shipValidator);
         ComputerBoard = new SetGameBoard(boardServices, boardInitializer, shipValidator);
-       
+
         Response = new PrepareGameVsComputerResponse
             {
                 Data = new PrepareGameVsComputerDto
@@ -85,30 +88,34 @@
     }
     [Parameter]
     public string GameId { get; set; }
+
     private List<Cell> Segments = new List<Cell>();
     private List<(int Row, int Col)> shipCoordinates = new List<(int Row, int Col)>();
-    private string? errorMessage;
+    private string errorMessage = string.Empty;
     private HashSet<(int Row, int Col)> selectedCells = new HashSet<(int Row, int Col)>();
     private List<Ship> ships = new List<Ship>();
     private bool computerShipsPlaced = false;
 
-    private void OnCellClick(int row, int col)
+    private async void OnCellClick(int row, int col)
     {
-        var cell = Board.Board[row, col];
+        var cell = Board.GetCell(row, col);
 
-        if (cell.HasShip)
-        {
-            errorMessage = "This cell is already occupied. Choose another cell.";
-            return;
-        }
         var potentialCoordinates = new List<(int Row, int Col)>(shipCoordinates) { (row, col) };
+        Console.WriteLine($"number of coordinates: {ships.Count}");
 
-        if (shipValidator.AreAdjacentCellsFree(potentialCoordinates))
+        if (!cell.HasShip)
         {
-            errorMessage = "Invalid placement. Choose another cell.";
+            if (shipValidator.AreAdjacentCellsFree(potentialCoordinates))
+            {
+                await ShowErrorMessage("Invalid placement. Choose another cell.");
+                return;
+            }
+        }
+        else
+        {
+            await ShowErrorMessage("This cell is already occupied. Choose another cell.");
             return;
         }
-
 
         if (selectedCells.Contains((row, col)))
         {
@@ -120,8 +127,21 @@
             selectedCells.Add((row, col));
             shipCoordinates.Add((row, col));
         }
-        StateHasChanged(); 
+
+        StateHasChanged();
     }
+    private async Task ShowErrorMessage(string message)
+    {
+        errorMessage = message;            
+        StateHasChanged();                 
+
+        await Task.Delay(3000);            
+
+        errorMessage = string.Empty;       
+        StateHasChanged();                 
+    }
+    
+
     private void StartGame()
     {
         computerShipPlacer.PlaceShipsForComputer();
@@ -163,5 +183,6 @@
     {
         Console.WriteLine("Fire");
     }
+    
     
 }

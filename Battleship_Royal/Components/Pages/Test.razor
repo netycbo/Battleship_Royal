@@ -1,0 +1,137 @@
+﻿@page "/test"
+@using Battleship_Royal.GameLogic.GameBoard.GameBoardServices
+@using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
+@using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces
+@inject IGameBoardServices boardServices
+@inject IBoardInitializer boardInitializer
+@inject IShipValidator shipValidator
+
+@inject IGameBoardServices boardServices
+<div class="containerGame">
+    <!-- Left Side: Game Board -->
+    <div class="game-board">
+        @for (int row = 0; row < 10; row++)
+        {
+            @for (int col = 0; col < 10; col++)
+            {
+                var currentRow = row;
+                var currentCol = col;
+                var cell = Board.Board[currentRow, currentCol];
+
+                <div class="cell @(cell.HasShip ? "ship" : "") @(IsCellSelected(currentRow, currentCol) ? "selected" : "")"
+                     @onclick="() => OnCellClick(currentRow, currentCol)">
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Right Side: Other Elements -->
+    <div class="side-panel">
+        <!-- Row for Add Ship and Start Game buttons -->
+        <div class="button-row">
+            <button class="add-ship-button" @onclick="AddShip">Add Ship</button>
+            <button class="start-game-button">Start Game</button>
+        </div>
+
+        <!-- Timer -->
+        <div class="timer">
+            Czas do końca rozgrywki: mm:ss
+        </div>
+
+        <!-- Player Stats -->
+        <div class="player-stats">
+            Trafienia gracza - % zatopionych statków
+        </div>
+
+        <!-- Computer Stats -->
+        <div class="computer-stats">
+            Trafienia komputera - % zatopionych statków
+        </div>
+
+        <!-- Player's turn (new turn info section) -->
+        <div class="player-turn">
+            Ruch gracza - zmiana koloru jeśli jest kolej gracza
+        </div>
+
+        <!-- Computer's turn (new turn info section) -->
+        <div class="computer-turn">
+            Ruch komputera - zmiana koloru jeśli jest kolej komputera
+        </div>
+    </div>
+</div>
+
+@code {
+    public SetGameBoard Board { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Board = new SetGameBoard(boardServices, boardInitializer, shipValidator);
+    }
+
+    [Parameter]
+    public string GameId { get; set; }
+    private List<Cell> Segments = new List<Cell>();
+    private List<(int Row, int Col)> shipCoordinates = new List<(int Row, int Col)>();
+    private string? errorMessage;
+    private HashSet<(int Row, int Col)> selectedCells = new HashSet<(int Row, int Col)>();
+    private List<Ship> ships = new List<Ship>();
+
+     private void OnCellClick(int row, int col)
+    {
+        var cell = Board.Board[row, col];
+
+        if (cell.HasShip)
+        {
+            errorMessage = "This cell is already occupied. Choose another cell.";
+            return;
+        }
+        // var potentialCoordinates = new List<(int Row, int Col)>(shipCoordinates) { (row, col) };
+        
+        // if (!boardServices.AreAdjacentCellsFree(potentialCoordinates))
+        // {
+        //     errorMessage = "Invalid placement. Choose another cell.";
+        //     return;
+        // }
+        
+
+        if (selectedCells.Contains((row, col)))
+        {
+            selectedCells.Remove((row, col));
+            shipCoordinates.Remove((row, col));
+        }
+        else
+        {
+            selectedCells.Add((row, col));
+            shipCoordinates.Add((row, col));
+        }
+
+        StateHasChanged(); 
+    }
+
+    private void AddShip()
+    {
+        if (shipCoordinates.Count == 0)
+        {
+            errorMessage = "You must select at least one cell to place a ship.";
+            return;
+        }
+
+        try
+        {
+            Board.PlaceShip(shipCoordinates);
+            errorMessage = null;
+            shipCoordinates.Clear();
+            selectedCells.Clear(); 
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private bool IsCellSelected(int row, int col)
+    {
+        return selectedCells.Contains((row, col));
+    }
+}

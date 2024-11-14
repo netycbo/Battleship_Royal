@@ -89,7 +89,6 @@ div[class^="div"] {
     margin: 5px; /* Margin around each div for spacing */
 }
 
-/* Ensure divs are responsive */
 @media (max-width: 800px) {
     div[class^="div"] {
         flex: 1 0 45%; /* Adjust to 2 divs in a row on smaller screens */
@@ -121,30 +120,17 @@ div[class^="div"] {
 .game-board-container {
     width: 70%; /* Adjust as necessary */
     padding: 10px;
-    border-left: 1px solid #ccc; /* Optional: Add a border for separation */
+    border-left: 1px solid #ccc; 
 }
 
-/* Additional styles for the game board and cells */
+ Additional styles for the game board and cells 
 .game-board {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    gap: 2px; /* Spacing between cells */
+    gap: 2px;  spacing: between cells; 
 }
 
-.cell {
-    width: 100%;
-    padding-bottom: 100%; /* Makes cells square */
-    background-color: lightblue; /* Default color */
-    cursor: pointer;
-}
 
-    .cell.ship {
-        background-color: darkblue; /* Color for ship cells */
-    }
-
-    .cell.hit {
-        background-color: red; /* Color for hit cells */
-    }
 
 .switch {
     position: relative;
@@ -171,12 +157,10 @@ div[class^="div"] {
     border-radius: 34px; /* Zaokrąglenie krawędzi */
 }
 
-/* Kiedy checkbox jest zaznaczony */
 input:checked + .slider {
-    background-color: #2196F3; /* Kolor przełącznika po zaznaczeniu */
+    background-color: #2196F3; 
 }
 
-/* Tworzenie kółka na przełączniku */
 .slider:before {
     position: absolute;
     content: "";
@@ -194,7 +178,7 @@ input:checked + .slider:before {
     transform: translateX(26px); /* Przesunięcie kółka w prawo */
 }
 
-/* Stylizacja dla divu z zawartością */
+
 .content {
     margin-top: 30px; /* Odstęp nad zawartością divu */
     padding: 10px; /* Wewnętrzne odstępy */
@@ -202,9 +186,9 @@ input:checked + .slider:before {
     border-radius: 4px; /* Zaokrąglenie krawędzi */
     background: linear-gradient(90deg, #343a40, #007bff); /* Tło divu */
 }
-/*.container1 {
+.container1 {
     background: linear-gradient(90deg, rgba(35,161,190,1) 10%, rgba(32,43,43,1) 84%);
-}*/
+}
 .label-text {
     margin-right: 90px; /* Odstęp między tekstem a przełącznikiem */
     margin-left: 90px;
@@ -216,3 +200,27 @@ input:checked + .slider:before {
     color: antiquewhite;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+.set-game-container {
+    display: flex;
+    gap: 20px; 
+}
+
+/*.game-board {
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 2;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+  
+}*/
+
+.board-row {
+    display: contents; 
+}  
+
+   
+.ship-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+

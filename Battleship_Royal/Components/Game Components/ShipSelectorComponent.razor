@@ -1,25 +1,16 @@
-﻿@using Microsoft.AspNetCore.Components
-@using System.Collections.Generic
-
-<h4>Select Ship Type</h4>
-
-<div>
-    <select @bind="selectedShipType">
-        <option value="">Select a ship type</option>
-        @foreach (var ship in shipTypes)
-        {
-            <option value="@ship.Length">@ship.DisplayName</option>
-        }
-    </select>
+﻿<div class="ship-selector">
+    <h4>Select Your Ships</h4>
+    @foreach (var ship in shipTypes)
+    {
+        <button @onclick="() => SelectShip(ship.Length)">@ship.DisplayName</button>
+    }
 </div>
 
 @code {
+    private int[] shipLengths = { 2, 3, 4, 5 };
     [Parameter]
-    public EventCallback<int> OnShipTypeSelected { get; set; }
+    public EventCallback<int> OnShipSelected { get; set; }
 
-    private string selectedShipType = ""; // Selected ship type
-
-    // Define available ships
     private List<ShipType> shipTypes = new List<ShipType>
     {
         new ShipType { Length = 5, DisplayName = "1 x 5 cells" },
@@ -28,13 +19,10 @@
         new ShipType { Length = 1, DisplayName = "4 x 1 cell" },
     };
 
-    private async Task OnShipTypeChange(ChangeEventArgs e)
+    private void SelectShip(int length)
     {
-        selectedShipType = e.Value.ToString();
-        if (int.TryParse(selectedShipType, out var length))
-        {
-            await OnShipTypeSelected.InvokeAsync(length);
-        }
+        Console.WriteLine($"Selected ship length: {length}");
+        OnShipSelected.InvokeAsync(length);
     }
 
     private class ShipType
