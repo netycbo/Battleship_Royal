@@ -20,7 +20,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
             _shipValidator = shipValidator;
             _ships = new List<Ship>();
 
-            _shipPlacer.SetBoard(_board);
+            //_shipPlacer.SetBoard(_board);
             _shipValidator.SetBoard(_board);
             _shipPlacer.SetShips(_ships);
             _shipValidator.SetShips(_ships);

@@ -8,11 +8,11 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
         private const int MaxCellPerShip = 4;
         private readonly IHasDifferentShape shapeChecker;
         private List<Ship> _ships;
-        public ShipValidator(Cell[,] board, IHasDifferentShape shapeChecker)
+        public ShipValidator(Cell[,] board,List<Ship> ships, IHasDifferentShape shapeChecker)
         {
             _board = board;
             this.shapeChecker = shapeChecker;
-            _ships = new List<Ship>();
+            _ships = ships;
         }
         public void SetBoard(Cell[,] board)
         {
