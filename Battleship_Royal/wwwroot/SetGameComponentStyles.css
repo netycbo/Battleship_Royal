@@ -32,16 +32,22 @@
     cursor: pointer; 
 }
 
-.timer {
-    padding: 5px;
-    font-size: 1.2em;
-}
-.player-stats, .computer-stats, .player-turn, .computer-turn {
+
+.player-stats, .computer-stats, .player-turn, .computer-turn, .timer {
     padding: 5px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1em;
+    height: 130px;
+    text-align: center;
+    margin-top: 3px;
 }
+.paragraph {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
 
 .cell {
     width: 100%;
@@ -51,16 +57,15 @@
 }
 
     .cell.ship {
-        background-color: lightgray;
+        background-color: greenyellow;
     }
 
     .cell.selected {
         background-color: lightblue;
     }
 
-    /* Styl dla aktywnej komórki, gdy jest kliknięta */
     .cell:hover {
-        background-color: #dcdcdc; /* Zmiana koloru komórki przy najechaniu */
+        background-color: darkred;
     }
 .error-message {
     grid-column: 1 / -1;
@@ -71,4 +76,5 @@
     text-align: center;
     font-size: 1em;
     border: 1px solid #f00;
+    
 }
