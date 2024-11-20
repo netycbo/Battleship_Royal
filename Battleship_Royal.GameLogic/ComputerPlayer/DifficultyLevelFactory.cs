@@ -22,7 +22,7 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer
         public DifficultyLevelFactory()
         {
             random = new Random();
-            gameBoard = new GameBoardServices(boardInitializer, shipPlacer, shipValidator);
+            //gameBoard = new GameBoardServices(shipPlacer, shipValidator);
             bfs = new BfsAlgorithm(gameBoard);
             generateCoordinates = new GenerateRandomCoordinates(random);
         }
