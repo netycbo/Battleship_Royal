@@ -4,16 +4,24 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
 {
     public class BoardInitializer : IBoardInitializer
     {
-        public Cell[,] InitializeBoard(int rows, int columns)
+        public Cell[,] InitializeBoard(int rows, int cols)
         {
-            var board = new Cell[rows, columns];
-            for (int i = 0; i < rows; i++)
+            Console.WriteLine($"Initializing board with dimensions {rows}x{cols}");
+            var board = new Cell[rows, cols];
+            for (int row = 0; row < rows; row++)
             {
-                for (int j = 0; j < columns; j++)
+                for (int col = 0; col < cols; col++)
                 {
-                    board[i, j] = new Cell();
+                    board[row, col] = new Cell
+                    {
+                        Row = row,
+                        Col = col,
+                        HasShip = false,
+                        IsHit = false
+                    };
                 }
             }
+            Console.WriteLine("Board initialized successfully. - initializer");
             return board;
         }
     }

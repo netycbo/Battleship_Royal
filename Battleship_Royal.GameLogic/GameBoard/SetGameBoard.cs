@@ -5,18 +5,18 @@ using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
 
 namespace Battleship_Royal.GameLogic
 {
-    public class SetGameBoard
+    public class SetGameBoard : ISetGameBoard
     {
-        private readonly IGameBoardServices gameBoardServices;
-        private readonly IShipValidator shipValidator;
-       
-        public SetGameBoard(IGameBoardServices gameBoardServices, IBoardInitializer boardInitializer, IShipValidator shipValidator)
-        {         
-            this.gameBoardServices = gameBoardServices;
-            this.shipValidator = shipValidator;
+        private readonly Cell[,] _board;
+        private readonly IShipValidator _shipValidator;
+        private readonly IGameBoardServices? gameBoardServices;
+
+        public SetGameBoard(IGameContext gameContext, IShipValidator shipValidator)
+        {
+            _board = gameContext.Board ?? throw new ArgumentNullException(nameof(gameContext.Board));
+            _shipValidator = shipValidator;
         }
-        public Cell[,] Board => gameBoardServices.Board;
-           
+
         public void PlaceShip(List<(int Row, int Col)> coordinates)
         {
             //foreach(var coordinate in coordinates)
@@ -31,7 +31,7 @@ namespace Battleship_Royal.GameLogic
                 throw new Exception("Exceeded maximum number of ship cells (35).");
             }
 
-            gameBoardServices.PlaceShip(coordinates); 
+            gameBoardServices.PlaceShip(coordinates);
         }
 
         //public bool Attack(int row, int col)
@@ -51,15 +51,15 @@ namespace Battleship_Royal.GameLogic
 
         public int GetHitsCount()
         {
-            return gameBoardServices.GetHitsCount(); 
+            return gameBoardServices.GetHitsCount();
         }
         public Cell GetCell(int row, int col)
         {
-            if (row < 0 || row >= Board.GetLength(0) || col < 0 || col >= Board.GetLength(1))
+            if (row < 0 || row >= _board.GetLength(0) || col < 0 || col >= _board.GetLength(1))
             {
                 throw new ArgumentOutOfRangeException("Podane współrzędne są poza zakresem planszy.");
             }
-            return Board[row, col];
+            return _board[row, col];
         }
     }
 }

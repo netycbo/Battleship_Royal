@@ -13,17 +13,14 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
         private Cell[,] _board;
         private readonly List<Ship> _ships;
 
-        public GameBoardServices(IBoardInitializer boardInitializer, IShipPlacer shipPlacer, IShipValidator shipValidator)
+        public GameBoardServices(IGameContext gameContext, IShipPlacer shipPlacer, IShipValidator shipValidator)
         {
-            _board = boardInitializer.InitializeBoard(10, 10);
-            _shipPlacer = shipPlacer;
-            _shipValidator = shipValidator;
-            _ships = new List<Ship>();
+            _board = gameContext.Board ?? throw new ArgumentNullException(nameof(gameContext.Board));
+            _ships = gameContext.Ships ?? throw new ArgumentNullException(nameof(gameContext.Ships));
+            _shipPlacer = shipPlacer ?? throw new ArgumentNullException(nameof(shipPlacer));
+            _shipValidator = shipValidator ?? throw new ArgumentNullException(nameof(shipValidator));
 
-            //_shipPlacer.SetBoard(_board);
-            _shipValidator.SetBoard(_board);
-            _shipPlacer.SetShips(_ships);
-            _shipValidator.SetShips(_ships);
+            Console.WriteLine("GameBoardServices initialized with shared GameContext.");
         }
         public Cell[,] Board => _board;
         public List<Ship> Ships => _ships;

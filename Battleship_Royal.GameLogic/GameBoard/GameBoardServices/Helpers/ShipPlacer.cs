@@ -5,39 +5,60 @@ using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
 
 public class ShipPlacer : IShipPlacer
 {
-   
     private List<Ship> _ships;
+    private  Cell[,] _board;
     private readonly ICheckShipPlacement _validator;
-    private readonly List<Cell> _segments;
-    private readonly IBoardInitializer _boardInitializer;
 
-    public ShipPlacer( ICheckShipPlacement validator, List<Ship> ships, List<Cell> segments, IBoardInitializer boardInitializer)
+
+
+    public ShipPlacer(IGameContext gameContext, ICheckShipPlacement validator)
     {
-        _validator = validator;
-       
-        _ships = ships ?? new List<Ship>();
-        _segments = segments ?? new List<Cell>();
-        _boardInitializer = boardInitializer;
-        
+        _board = gameContext.Board ?? throw new ArgumentNullException(nameof(gameContext.Board));
+        Console.WriteLine("z szip placera");
+        _ships = gameContext.Ships ?? throw new ArgumentNullException(nameof(gameContext.Ships));
+        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+
+        Console.WriteLine("ShipPlacer initialized with shared GameContext - szip placer.");
     }
-    
-    public void SetShips(List<Ship> ships)
-    {
-        _ships = ships;
-    }
+    //public void SetBoard(Cell[,] board)
+    //{
+    //    if (_board != null)
+    //    {
+    //        Console.WriteLine("SetBoard called again. Previous board will be overwritten.");
+    //    }
+    //    _board = board ?? throw new ArgumentNullException(nameof(board), "Board cannot be null.");
+    //    Console.WriteLine("Board set in ShipPlacer.");
+    //}
+    //public void SetShips(List<Ship> ships)
+    //{
+    //    _ships = ships ?? throw new ArgumentNullException(nameof(ships), "Ships cannot be null.");
+    //    Console.WriteLine("Ships set in ShipPlacer.");
+    //}
 
     public void PlaceShip(List<(int Row, int Col)> coordinates)
     {
-       var board = _boardInitializer.InitializeBoard(10, 10);
+      
         _validator.ValidateShipPlacement(coordinates, _ships);
 
         List<Cell> segments = coordinates.Select(c =>
         {
-            var cell = board[c.Row, c.Col];
+            if (_board == null)
+            {
+                throw new InvalidOperationException("Board is null.");
+            }
+
+            if (c.Row < 0 || c.Row >= _board.GetLength(0) || c.Col < 0 || c.Col >= _board.GetLength(1))
+            {
+                throw new ArgumentOutOfRangeException($"Coordinates ({c.Row}, {c.Col}) are out of board bounds.");
+            }
+
+            var cell = _board[c.Row, c.Col];
             if (cell == null)
             {
+                Console.WriteLine($"Cell at ({c.Row}, {c.Col}) is null.");
                 throw new InvalidOperationException($"Cell at ({c.Row}, {c.Col}) is null.");
             }
+
             return cell;
         }).ToList();
         var newShip = new Ship(segments, coordinates);
@@ -49,8 +70,11 @@ public class ShipPlacer : IShipPlacer
         }
 
         _ships.Add(newShip);
+        Console.WriteLine("Ship placed successfully from ShipPlacer.");
         OnShipPlaced?.Invoke(this, EventArgs.Empty);
     }
+
+    
 
     public event EventHandler OnShipPlaced;
 }

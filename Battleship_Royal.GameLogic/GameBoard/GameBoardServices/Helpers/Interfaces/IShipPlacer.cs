@@ -4,7 +4,7 @@
     {
         void PlaceShip(List<(int Row, int Col)> coordinates);
         //void SetBoard(Cell[,] board);
-        void SetShips(List<Ship> ships);
+        //void SetShips(List<Ship> ships);
 
 
     }

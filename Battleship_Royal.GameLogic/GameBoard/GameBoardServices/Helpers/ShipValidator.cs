@@ -6,13 +6,11 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
     {
         private Cell[,] _board;
         private const int MaxCellPerShip = 4;
-        private readonly IHasDifferentShape shapeChecker;
         private List<Ship> _ships;
-        public ShipValidator(Cell[,] board,List<Ship> ships, IHasDifferentShape shapeChecker)
+        public ShipValidator(IGameContext gameContext)
         {
-            _board = board;
-            this.shapeChecker = shapeChecker;
-            _ships = ships;
+            _board = gameContext.Board ?? throw new ArgumentNullException(nameof(gameContext.Board));
+            _ships = gameContext.Ships ?? throw new ArgumentNullException(nameof(gameContext.Ships));
         }
         public void SetBoard(Cell[,] board)
         {
