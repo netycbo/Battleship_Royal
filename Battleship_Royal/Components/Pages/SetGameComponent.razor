@@ -1,11 +1,15 @@
 ﻿@page "/set-game/{gameId}"
+@using Battleship_Royal.GameLogic;
 @using Battleship_Royal.Data.Services.GameServices.Helpers
 @using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
 @using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces
-@inject IBoardInitializer boardInitializer
-@inject IGameBoardServices boardServices
+
+@inject ISetGameBoard Board
 @inject IComputerShipPlacer computerShipPlacer
 @inject IShipValidator shipValidator
+@inject IShipPlacer shipPlacer
+@inject List<Ship> ships
+@inject IGameContext gameContext
 
 @rendermode InteractiveServer
 
@@ -18,23 +22,26 @@
             {
                 @for (int col = 0; col < 10; col++)
                 {
-                    var currentRow = row;
+                    var currentRow = row; 
                     var currentCol = col;
+
                     var cell = Board.GetCell(currentRow, currentCol);
 
-                    <div class="cell @(cell.HasShip ? "ship" : "") @(IsCellSelected(currentRow, currentCol) ? "selected" : "")"
+                    <div class="cell @(cell.HasShip ? "ship" : "") @(selectedCells.Contains((currentRow, currentCol)) ? "selected" : "")"
                          @onclick="() => OnCellClick(currentRow, currentCol)">
                     </div>
                 }
             }
         </div>
     </div>
+</div>
 
     <div class="side-panel">
         <div class="button-row">
             <button class="add-ship-button" style="visibility: @(ships.Count < 10 ? "visible" : "hidden")" @onclick="AddShip">Add Ship</button>
             <button class="fire-button" style="visibility: @(computerShipsPlaced ? "visible" : "hidden")" @onclick="FireHandle">Fire</button>
-            <button class="start-game-button" style="visibility: @(ships.Count == 10 ? "visible" : "hidden")" @onclick="StartGame">Start Game</button>
+            <button class="start-game-button" style="@((ships.Count == 10) ? "visibility: visible;" : "visibility: hidden;")" @onclick= "StartGame">Start Game</button>
+
         </div>
 
         <div class="timer" style="visibility:@(computerShipsPlaced ? "visible" : "hidden")">
@@ -42,7 +49,9 @@
         </div>
 
         <div class="computer-stats">
-            Trafienia komputera - % zatopionych statków
+            <div class="paragraph ">
+                Trafienia komputera - % zatopionych statków
+            </div>
         </div>
 
         <div class="player-turn">
@@ -50,10 +59,12 @@
         </div>
 
         <div class="computer-turn">
-            Ruch komputera - zmiana koloru jeśli jest kolej komputera
+            <div class="paragraph ">
+                Ruch komputera - zmiana koloru jeśli jest kolej komputera
+            </div>
         </div>
     </div>
-</div>
+
 
 
 @if (!string.IsNullOrEmpty(errorMessage))
@@ -64,23 +75,26 @@
 @code {
 
     public PrepareGameVsComputerResponse Response { get; set; } = new PrepareGameVsComputerResponse();
-    public SetGameBoard Board { get; set; }
-    public SetGameBoard ComputerBoard { get; set; }
+    
+    // public SetGameBoard ComputerBoard { get; set; }
     public ComputerShipPlacer ComputerShipPlacer { get; set; }
-
+    private bool _isInitialized = false;
     protected override void OnInitialized()
     {
-        Board = new SetGameBoard(boardServices, boardInitializer, shipValidator);
-        ComputerBoard = new SetGameBoard(boardServices, boardInitializer, shipValidator);
+        if (_isInitialized) return;
+
+        
 
         Response = new PrepareGameVsComputerResponse
             {
                 Data = new PrepareGameVsComputerDto
                 {
-                    Timer = 600 
+                    Timer = 600
                 }
             };
 
+        Console.WriteLine("Component initialized with shared GameContext.");
+        _isInitialized = true;
     }
     private void HandleShipPlaced(object sender, EventArgs e)
     {
@@ -88,12 +102,13 @@
     }
     [Parameter]
     public string GameId { get; set; }
-
+   
     private List<Cell> Segments = new List<Cell>();
     private List<(int Row, int Col)> shipCoordinates = new List<(int Row, int Col)>();
     private string errorMessage = string.Empty;
     private HashSet<(int Row, int Col)> selectedCells = new HashSet<(int Row, int Col)>();
-    private List<Ship> ships = new List<Ship>();
+    private HashSet<(int Row, int Col)> tempSelectedCells = new HashSet<(int Row, int Col)>();
+    
     private bool computerShipsPlaced = false;
 
     private async void OnCellClick(int row, int col)
@@ -105,7 +120,7 @@
 
         if (!cell.HasShip)
         {
-            if (shipValidator.AreAdjacentCellsFree(potentialCoordinates))
+            if (!shipValidator.AreAdjacentCellsFree(potentialCoordinates))
             {
                 await ShowErrorMessage("Invalid placement. Choose another cell.");
                 return;
@@ -117,17 +132,21 @@
             return;
         }
 
-        if (selectedCells.Contains((row, col)))
+        if (tempSelectedCells.Contains((row, col)))
         {
             selectedCells.Remove((row, col));
             shipCoordinates.Remove((row, col));
+            tempSelectedCells.Remove((row, col));
+            StateHasChanged();
         }
         else
         {
             selectedCells.Add((row, col));
             shipCoordinates.Add((row, col));
+            tempSelectedCells.Add((row, col));
+            StateHasChanged();
         }
-
+        Console.WriteLine($"selected cells: {tempSelectedCells.Count}");
         StateHasChanged();
     }
     private async Task ShowErrorMessage(string message)
@@ -140,17 +159,15 @@
         errorMessage = string.Empty;       
         StateHasChanged();                 
     }
-    
 
     private void StartGame()
     {
+
+        shipCoordinates.Clear();
+        selectedCells.Clear();
         computerShipPlacer.PlaceShipsForComputer();
         computerShipsPlaced = true;
-        selectedCells.Clear();
-        shipCoordinates.Clear();
-
         StateHasChanged();
-      
     }
     private void AddShip()
     {
@@ -161,18 +178,20 @@
         }
         try
         {
-            Board.PlaceShip(shipCoordinates);
-            var newship = new Ship(Segments, shipCoordinates);
-            ships.Add(newship);
-            Console.WriteLine($"Ships count: {ships.Count}");
+            shipPlacer.PlaceShip(shipCoordinates);
+            
+            Console.WriteLine($"Ships count: {ships.Count} in Set Gamecomponent");
             errorMessage = null;
-            shipCoordinates.Clear();
-            selectedCells.Clear(); 
             StateHasChanged();
+            shipCoordinates.Clear();
+            tempSelectedCells.Clear();
+           
+            
         }
         catch (Exception ex)
         {
             errorMessage = ex.Message;
+            StateHasChanged();
         }
     }
     private bool IsCellSelected(int row, int col)
