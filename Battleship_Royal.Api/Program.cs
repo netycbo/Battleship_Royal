@@ -49,7 +49,7 @@ builder.Services.AddAutoMapper(typeof(Profiles).GetTypeInfo().Assembly, typeof(P
 builder.Services.AddTransient<ISaveGamesServices, SaveGamesServices>();
 builder.Services.AddTransient<IUserIdService, UserIdService>();
 builder.Services.AddTransient<IDeserializeService, DeserializeService>();
-builder.Services.AddTransient<SetGameBoard>();
+
 builder.Services.AddTransient<IHasDifferentShape,HasDifferentShape>();
 builder.Services.AddTransient<IGameBoardServices, GameBoardServices>();
 builder.Services.AddTransient<IComputerShipPlacer, ComputerShipPlacer>();
@@ -57,14 +57,15 @@ builder.Services.AddTransient<IDifficultyStrategy, EasyLevel>();
 builder.Services.AddTransient<IGenerateRandomCoordinates, GenerateRandomCoordinates>();
 builder.Services.AddTransient<IBoardInitializer, BoardInitializer>();
 builder.Services.AddTransient<IHasDifferentShape, HasDifferentShape >();
-builder.Services.AddTransient<IShipPlacer, ShipPlacer>();
+builder.Services.AddScoped<IShipPlacer, ShipPlacer>();
 builder.Services.AddTransient<IShipValidator, ShipValidator>();
 builder.Services.AddTransient<IBfsAlgorithm, BfsAlgorithm>();
-builder.Services.AddTransient<IBoardInitializer, BoardInitializer>();
-builder.Services.AddTransient<IGameBoardServices, GameBoardServices>();
+builder.Services.AddScoped<IBoardInitializer, BoardInitializer>();
+builder.Services.AddScoped<IGameBoardServices, GameBoardServices>();
 builder.Services.AddScoped<IComputerShipPlacer, ComputerShipPlacer>();
 builder.Services.AddScoped<IGenerateJwtToken , GenerateJwtToken>();
 builder.Services.AddScoped<IGenerateRefreshToken, GenerateRefreshToken>();
+
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddSingleton<Random>();
 builder.Services.AddSignalR();
