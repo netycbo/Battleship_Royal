@@ -3,7 +3,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
 {
     public interface IShipValidator
     {
-        bool AreAdjacentCellsFree(List<(int Row, int Col)> coordinates);
+        bool AreAdjacentCellsFree(List<(int Row, int Col)> coordinates, Cell[,] board);
         bool IsValidPlacement(int row, int col);
         void SetBoard(Cell[,] board);
         void SetShips(List<Ship> ships);

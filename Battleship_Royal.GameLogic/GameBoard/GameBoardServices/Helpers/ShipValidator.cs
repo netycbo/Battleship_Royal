@@ -1,4 +1,5 @@
 ﻿using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
+using Battleship_Royal.GameLogic.GameContext;
 
 namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
 {
@@ -21,7 +22,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
             _ships = ships;
         }
 
-        public bool AreAdjacentCellsFree(List<(int Row, int Col)> coordinates)
+        public bool AreAdjacentCellsFree(List<(int Row, int Col)> coordinates, Cell[,] board)
         {
 
             foreach (var (row, col) in coordinates)

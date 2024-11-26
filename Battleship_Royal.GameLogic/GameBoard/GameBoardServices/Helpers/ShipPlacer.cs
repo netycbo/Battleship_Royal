@@ -1,16 +1,16 @@
 ﻿using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
-using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
 using Battleship_Royal.GameLogic;
-using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using Battleship_Royal.GameLogic.GameContext;
 
 public class ShipPlacer : IShipPlacer
 {
     private List<Ship> _ships;
-    private  Cell[,] _board;
+    private Cell[,] _board;
     private readonly ICheckShipPlacement _validator;
-
-
-
     public ShipPlacer(IGameContext gameContext, ICheckShipPlacement validator)
     {
         _board = gameContext.Board ?? throw new ArgumentNullException(nameof(gameContext.Board));
@@ -20,24 +20,9 @@ public class ShipPlacer : IShipPlacer
 
         Console.WriteLine("ShipPlacer initialized with shared GameContext - szip placer.");
     }
-    //public void SetBoard(Cell[,] board)
-    //{
-    //    if (_board != null)
-    //    {
-    //        Console.WriteLine("SetBoard called again. Previous board will be overwritten.");
-    //    }
-    //    _board = board ?? throw new ArgumentNullException(nameof(board), "Board cannot be null.");
-    //    Console.WriteLine("Board set in ShipPlacer.");
-    //}
-    //public void SetShips(List<Ship> ships)
-    //{
-    //    _ships = ships ?? throw new ArgumentNullException(nameof(ships), "Ships cannot be null.");
-    //    Console.WriteLine("Ships set in ShipPlacer.");
-    //}
-
     public void PlaceShip(List<(int Row, int Col)> coordinates)
     {
-      
+
         _validator.ValidateShipPlacement(coordinates, _ships);
 
         List<Cell> segments = coordinates.Select(c =>
@@ -70,11 +55,11 @@ public class ShipPlacer : IShipPlacer
         }
 
         _ships.Add(newShip);
-        Console.WriteLine("Ship placed successfully from ShipPlacer.");
+        Console.WriteLine($"Ship placed successfully from ShipPlacer: {_ships.Count}.");
         OnShipPlaced?.Invoke(this, EventArgs.Empty);
     }
 
-    
+
 
     public event EventHandler OnShipPlaced;
 }

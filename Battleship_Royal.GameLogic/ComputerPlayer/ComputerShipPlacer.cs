@@ -1,53 +1,68 @@
 ﻿using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
-using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
+using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
+using Battleship_Royal.GameLogic.GameContext;
+using Battleship_Royal.GameLogic;
 
-namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
+public class ComputerShipPlacer(IGameContextFactory gameContextFactory, IShipValidator shipValidator, IHasDifferentShape shapeChecker) : IComputerShipPlacer
 {
-    public class ComputerShipPlacer(IGameBoardServices gameBoardServices, IShipValidator shipValidator, IHasDifferentShape shapeChecker) : IComputerShipPlacer
+    public void PlaceShipsForComputer()
     {
-        public void PlaceShipsForComputer()
+        var shipSizes = new List<int> { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
+
+        var computerGameContext = gameContextFactory.CreateGameContext();
+        shipValidator.SetBoard(computerGameContext.Board);
+        shipValidator.SetShips(computerGameContext.Ships);
+
+
+        foreach (int size in shipSizes)
         {
-            var shipSizes = new List<int> { 4, 3, 3, 2,2,2, 1,1,1,1 };
-
-            foreach (int size in shipSizes)
+            bool placed = false;
+            while (!placed)
             {
-                bool placed = false;
-                while (!placed)
+                int startRow = new Random().Next(0, 10);
+                int startCol = new Random().Next(0, 10);
+                bool isHorizontal = new Random().Next(2) == 0;
+
+                var coordinates = GenerateShipCoordinates(startRow, startCol, size, isHorizontal);
+
+                if (coordinates.Count == size &&
+                    shipValidator.AreAdjacentCellsFree(coordinates, computerGameContext.Board) &&
+                    !shapeChecker.IsSquareShape(coordinates) &&
+                    shipValidator.IsValidPlacement(startRow, startCol))
+
                 {
-                    int startRow = new Random().Next(0, 10);
-                    int startCol = new Random().Next(0, 10);
-                    bool isHorizontal = new Random().Next(2) == 0;
-
-                    var coordinates = GenerateShipCoordinates(startRow, startCol, size, isHorizontal);
-
-                    if (coordinates.Count == size &&
-                        shipValidator.AreAdjacentCellsFree(coordinates) &&
-                        !shapeChecker.IsSquareShape(coordinates));
-                    {
-                        gameBoardServices.PlaceShip(coordinates);
-                        placed = true;
-                    }
+                    PlaceShipOnBoard(coordinates, computerGameContext.Board, computerGameContext.Ships);
+                    placed = true;
                 }
             }
         }
+    }
 
-        private List<(int Row, int Col)> GenerateShipCoordinates(int startRow, int startCol, int size, bool isHorizontal)
+    private List<(int Row, int Col)> GenerateShipCoordinates(int startRow, int startCol, int size, bool isHorizontal)
+    {
+        var coordinates = new List<(int Row, int Col)>();
+        for (int i = 0; i < size; i++)
         {
-            var coordinates = new List<(int Row, int Col)>();
-            for (int i = 0; i < size; i++)
-            {
-                int row = isHorizontal ? startRow : startRow + i;
-                int col = isHorizontal ? startCol + i : startCol;
-
-                if (!shipValidator.IsValidPlacement(row, col))
-                {
-                    coordinates.Clear();
-                    break;
-                }
-                coordinates.Add((row, col));
-            }
-            return coordinates;
+            int row = startRow + (isHorizontal ? 0 : i);
+            int col = startCol + (isHorizontal ? i : 0);
+            coordinates.Add((row, col));
         }
+        return coordinates;
+    }
+    private void PlaceShipOnBoard(List<(int Row, int Col)> coordinates, Cell[,] board, List<Ship> ships)
+    {
+        List<Cell> segments = coordinates.Select(c => board[c.Row, c.Col]).ToList();
+        var newShip = new Ship(segments, coordinates);
+
+        foreach (var cell in segments)
+        {
+            cell.HasShip = true;
+            cell.OccupyingShip = newShip;
+        }
+
+        ships.Add(newShip);
+        Console.WriteLine("Computer placed ship successfully.");
     }
 }

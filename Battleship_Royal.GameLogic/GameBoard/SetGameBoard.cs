@@ -1,6 +1,7 @@
 ﻿using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
+using Battleship_Royal.GameLogic.GameContext;
 
 
 namespace Battleship_Royal.GameLogic
@@ -19,13 +20,7 @@ namespace Battleship_Royal.GameLogic
 
         public void PlaceShip(List<(int Row, int Col)> coordinates)
         {
-            //foreach(var coordinate in coordinates)
-            //{
-            //    if(!IsValidPlacement(coordinate.Col, coordinate.Row))
-            //    {
-            //        throw new Exception("invalid placment");
-            //    }
-            //}
+           
             if (GetShipsCount() + coordinates.Count > 35)
             {
                 throw new Exception("Exceeded maximum number of ship cells (35).");
