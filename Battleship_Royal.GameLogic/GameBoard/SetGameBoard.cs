@@ -1,7 +1,7 @@
 ﻿using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
-using Battleship_Royal.GameLogic.GameContext;
+using Battleship_Royal.GameLogic.GameContext.Interfaces;
 
 
 namespace Battleship_Royal.GameLogic
@@ -28,16 +28,6 @@ namespace Battleship_Royal.GameLogic
 
             gameBoardServices.PlaceShip(coordinates);
         }
-
-        //public bool Attack(int row, int col)
-        //{
-        //    return gameBoardServices.Attack(row, col); 
-        //}
-
-        //public bool IsValidPlacement(int row, int col)
-        //{
-        //    return shipValidator.AreAdjacentCellsFree(new List<(int, int)> { (row, col) });
-        //}
 
         public int GetShipsCount()
         {

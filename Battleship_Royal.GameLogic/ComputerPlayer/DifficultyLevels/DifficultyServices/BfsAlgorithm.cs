@@ -1,62 +1,74 @@
-﻿using System.ComponentModel;
-using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.Interfaces;
-using Battleship_Royal.GameLogic.GameBoard;
+﻿using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.Interfaces;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
+using Battleship_Royal.GameLogic.GameContext.Interfaces;
+using Battleship_Royal.GameLogic;
 
-namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices
+public class BfsAlgorithm : IBfsAlgorithm
 {
-    public class BfsAlgorithm(IGameBoardServices gameBoard) : IBfsAlgorithm
+    private readonly IGameContext _gameContext;
+    private readonly IGameBoardServices _gameBoard;
+
+    public BfsAlgorithm(IGameContext gameContext, IGameBoardServices gameBoard)
     {
-        public struct Target
-        {
-            public int Row { get; set; }
-            public int Col { get; set; }
+        _gameContext = gameContext ?? throw new ArgumentNullException(nameof(gameContext));
+        _gameBoard = gameBoard ?? throw new ArgumentNullException(nameof(gameBoard));
+    }
 
-            public Target(int row, int col)
-            {
-                Row = row;
-                Col = col;
-            }
+    public struct Target
+    {
+        public int Row { get; set; }
+        public int Col { get; set; }
+
+        public Target(int row, int col)
+        {
+            Row = row;
+            Col = col;
         }
-        public Target BFS(int start)
+    }
+
+    public Target BFS(int startRow, int startCol)
+    {
+        var board = _gameContext.Board;
+
+        Queue<Target> queue = new Queue<Target>();
+        HashSet<Target> visited = new HashSet<Target>();
+
+        queue.Enqueue(new Target(startRow, startCol));
+
+        while (queue.Count > 0)
         {
-            Queue<Target> queue = new Queue<Target>();
-            HashSet<Target> visited = new HashSet<Target>();
+            var current = queue.Dequeue();
 
-            queue.Enqueue(new Target(0, 0));
-
-            while (queue.Count > 0)
+            // Próba ataku na obecny cel
+            if (_gameBoard.Attack(current.Row, current.Col, board))
             {
-                var current = queue.Dequeue();
-
-                if (gameBoard.Attack(current.Row, current.Col))
-                {
-                    return current;
-                }
-
-                AddNeighbor(current.Row - 1, current.Col, queue, visited);
-                AddNeighbor(current.Row + 1, current.Col, queue, visited);
-                AddNeighbor(current.Row, current.Col - 1, queue, visited);
-                AddNeighbor(current.Row, current.Col + 1, queue, visited);
+                return current;
             }
 
-            return new Target(-1, -1);
-        }
-
-        private void AddNeighbor(int row, int col, Queue<Target> queue, HashSet<Target> visited)
-        {
-            if (row >= 0 && row < 10 && col >= 0 && col < 10)
-            {
-                var neighbor = new Target(row, col);
-                if (!visited.Contains(neighbor))
-                {
-                    queue.Enqueue(neighbor);
-                    visited.Add(neighbor);
-                }
-            }
+            // Dodanie sąsiadów do kolejki
+            AddNeighbor(current.Row - 1, current.Col, queue, visited, board);
+            AddNeighbor(current.Row + 1, current.Col, queue, visited, board);
+            AddNeighbor(current.Row, current.Col - 1, queue, visited, board);
+            AddNeighbor(current.Row, current.Col + 1, queue, visited, board);
         }
 
+        // Zwróć nieistniejący cel, jeśli nic nie zostało znalezione
+        return new Target(-1, -1);
+    }
 
+    private void AddNeighbor(int row, int col, Queue<Target> queue, HashSet<Target> visited, Cell[,] board)
+    {
+        // Sprawdzenie, czy współrzędne są w granicach planszy
+        if (row >= 0 && row < board.GetLength(0) && col >= 0 && col < board.GetLength(1))
+        {
+            var neighbor = new Target(row, col);
+
+            // Dodanie do kolejki tylko, jeśli nie odwiedzono wcześniej
+            if (!visited.Contains(neighbor))
+            {
+                queue.Enqueue(neighbor);
+                visited.Add(neighbor);
+            }
+        }
     }
 }
-

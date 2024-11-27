@@ -1,5 +1,4 @@
-﻿
-namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
+﻿namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
 {
     public interface IShipValidator
     {

@@ -2,13 +2,14 @@
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
 using Battleship_Royal.GameLogic.GameContext;
+using Battleship_Royal.GameLogic.GameContext.Interfaces;
 
 
 namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
 {
     public class GameBoardServices : IGameBoardServices
     {
-
+        private readonly IGameContext _gameContext;
         private readonly IShipValidator _shipValidator;
         private readonly IShipPlacer _shipPlacer;
         private Cell[,] _board;
@@ -20,7 +21,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
             _ships = gameContext.Ships ?? throw new ArgumentNullException(nameof(gameContext.Ships));
             _shipPlacer = shipPlacer ?? throw new ArgumentNullException(nameof(shipPlacer));
             _shipValidator = shipValidator ?? throw new ArgumentNullException(nameof(shipValidator));
-
+            _gameContext = gameContext;
             Console.WriteLine("GameBoardServices initialized with shared GameContext.");
         }
         public Cell[,] Board => _board;
@@ -41,35 +42,37 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
                 }
             }
 
-            //if (_shipValidator.IsValidPlacement(row: coordinates[0].Row, col: coordinates[0].Col))
-            //{
-            //    throw new Exception("Invalid placement: coordinates do not meet placement rules.");
-            //}
-
             _shipPlacer.PlaceShip(coordinates);
         }
 
-        public bool Attack(int row, int col)
+        public bool Attack(int row, int col, Cell[,] board)
         {
-            if (_board[row, col].IsHit)
+            const int maxTriesPerTur = 2;
+            int tries = 0;
+
+            while (tries <= maxTriesPerTur)
             {
-                return false;
-            }
-
-            _board[row, col].IsHit = true;
-
-            if (_board[row, col].HasShip)
-            {
-                Ship hitShip = _ships.FirstOrDefault(ship => ship.Segments.Any(segment => segment == _board[row, col]));
-
-                if (hitShip != null && hitShip.IsSunk())
+                if (board[row, col].HasShip)
                 {
-                    Console.WriteLine("Statek został zatopiony!");
+                    var hitShip = _gameContext.Ships.FirstOrDefault(ship => ship.Segments.Any(segment => segment == board[row, col]));
+
+                    if (hitShip != null && hitShip.IsSunk())
+                    {
+                        Console.WriteLine("Statek został zatopiony!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Statek został trafiony!");
+                    }
+                    return true;
+
                 }
-                return true;
+                tries++;
+
             }
             return false;
         }
+        
 
         public int GetShipsCount() => _ships.Count;
         public int GetHitsCount()

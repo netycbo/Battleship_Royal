@@ -1,9 +1,4 @@
-﻿using static Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.BfsAlgorithm;
-
-namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.Interfaces
+﻿public interface IBfsAlgorithm
 {
-    public interface IBfsAlgorithm
-    {
-        Target BFS(int start);
-    }
+    BfsAlgorithm.Target BFS(int startRow, int startCol);
 }

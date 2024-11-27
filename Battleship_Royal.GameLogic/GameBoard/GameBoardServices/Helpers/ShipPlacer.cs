@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
-using Battleship_Royal.GameLogic.GameContext;
+using Battleship_Royal.GameLogic.GameContext.Interfaces;
 
 public class ShipPlacer : IShipPlacer
 {

@@ -1,5 +1,4 @@
-﻿
-namespace Battleship_Royal.GameLogic
+﻿namespace Battleship_Royal.GameLogic
 {
     public interface ISetGameBoard
     {

@@ -2,16 +2,18 @@
 using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
 using Battleship_Royal.GameLogic.GameBoard;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
-using static Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.BfsAlgorithm;
+using Battleship_Royal.GameLogic.GameContext.Interfaces;
+
 
 namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels
 {
-    public class EasyLevel(Random random, IBfsAlgorithm bfs, IGameBoardServices gameBoard, IGenerateRandomCoordinates generateCoordinates) : IDifficultyStrategy
+    public class EasyLevel(Random random, IBfsAlgorithm bfs, IGameBoardServices gameBoard, IGenerateRandomCoordinates generateCoordinates, IGameContext gameContext) : IDifficultyStrategy
     {
         public int BfsAlgorithm()
         {
-            Target target = bfs.BFS(0);
-            gameBoard.Attack(target.Row, target.Col);
+            var board = gameContext.Board;
+            BfsAlgorithm.Target target = bfs.BFS(0,0);
+            gameBoard.Attack(target.Row, target.Col, board);
             return target.Row * 10 + target.Col;
         }
 
@@ -31,8 +33,9 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels
 
         public int RandomMove()
         {
+            var board = gameContext.Board;
             generateCoordinates.GenerateCoordinates(out int row, out int col);
-            gameBoard.Attack(row, col);
+            gameBoard.Attack(row, col, board);
             return row * 10 + col;
         }
     }
