@@ -28,7 +28,7 @@ public class BfsAlgorithm : IBfsAlgorithm
 
     public Target BFS(int startRow, int startCol)
     {
-        var board = _gameContext.Board;
+        var board = _gameContext.HumanPlayerBoard;
 
         Queue<Target> queue = new Queue<Target>();
         HashSet<Target> visited = new HashSet<Target>();

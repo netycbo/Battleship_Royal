@@ -13,7 +13,7 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels
     {
         public int BfsAlgorithm()
         {
-            var board = gameContext.Board;
+            var board = gameContext.HumanPlayerBoard;
             BfsAlgorithm.Target target = bfs.BFS(0,0);
             gameBoard.Attack(target.Row, target.Col, board);
             return target.Row * 10 + target.Col;
@@ -34,7 +34,7 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels
         }
         public int RandomMove()
         {
-            var board = gameContext.Board;
+            var board = gameContext.HumanPlayerBoard;
             generatCoordinates.GenerateCoordinates(out int row, out int col);
             gameBoard.Attack(row, col, board);
 

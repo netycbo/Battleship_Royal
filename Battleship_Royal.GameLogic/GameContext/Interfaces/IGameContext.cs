@@ -2,7 +2,9 @@
 {
     public interface IGameContext
     {
-        Cell[,] Board { get; set; }
+        Cell[,] HumanPlayerBoard { get; set; }
+
+        Cell[,] ComputerPlayerBoard { get; set; }
         List<Ship> Ships { get; set; }
     }
 }
