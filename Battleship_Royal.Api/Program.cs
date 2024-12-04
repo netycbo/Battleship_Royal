@@ -9,20 +9,29 @@ using Battleship_Royal.Api.Handlers.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
-
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices.Interfaces;
 using Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels.DifficultyServices;
-
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
 using Battleship_Royal.GameLogic;
 using Battleship_Royal.Data.Services.GameServices.Helpers;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
+using Battleship_Royal.GameLogic.GameContext.Interfaces;
+using Battleship_Royal.GameLogic.GameContext;
+using Serilog;
+using Microsoft.AspNetCore.Diagnostics;
 
 
 var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/login-middleware-.txt", rollingInterval: RollingInterval.Day)
+    .Enrich.FromLogContext()
+    .CreateLogger();
 
+
+builder.Host.UseSerilog();
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -42,30 +51,28 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<BattleshipsDbContext>()
 .AddDefaultTokenProviders();
 
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddAutoMapper(typeof(Profiles).GetTypeInfo().Assembly, typeof(Profiles).Assembly);
 
 builder.Services.AddTransient<ISaveGamesServices, SaveGamesServices>();
 builder.Services.AddTransient<IUserIdService, UserIdService>();
 builder.Services.AddTransient<IDeserializeService, DeserializeService>();
 
-builder.Services.AddTransient<IHasDifferentShape,HasDifferentShape>();
-builder.Services.AddTransient<IGameBoardServices, GameBoardServices>();
-builder.Services.AddTransient<IComputerShipPlacer, ComputerShipPlacer>();
+builder.Services.AddSingleton<IHasDifferentShape, HasDifferentShape>();
+builder.Services.AddScoped<IGameBoardServices, GameBoardServices>();
+builder.Services.AddScoped<IComputerShipPlacer, ComputerShipPlacer>();
 builder.Services.AddTransient<IDifficultyStrategy, EasyLevel>();
 builder.Services.AddTransient<IGenerateRandomCoordinates, GenerateRandomCoordinates>();
-builder.Services.AddTransient<IBoardInitializer, BoardInitializer>();
-builder.Services.AddTransient<IHasDifferentShape, HasDifferentShape >();
+builder.Services.AddSingleton<IBoardInitializer, BoardInitializer>();
+builder.Services.AddScoped<ICheckShipPlacement, CheckShipPlacement>();
 builder.Services.AddScoped<IShipPlacer, ShipPlacer>();
-builder.Services.AddTransient<IShipValidator, ShipValidator>();
+builder.Services.AddScoped<IShipValidator, ShipValidator>();
 builder.Services.AddTransient<IBfsAlgorithm, BfsAlgorithm>();
 builder.Services.AddScoped<IBoardInitializer, BoardInitializer>();
 builder.Services.AddScoped<IGameBoardServices, GameBoardServices>();
 builder.Services.AddScoped<IComputerShipPlacer, ComputerShipPlacer>();
 builder.Services.AddScoped<IGenerateJwtToken , GenerateJwtToken>();
 builder.Services.AddScoped<IGenerateRefreshToken, GenerateRefreshToken>();
-
+builder.Services.AddScoped<IGameContext, GameContext>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddSingleton<Random>();
 builder.Services.AddSignalR();
@@ -101,7 +108,7 @@ builder.Services.AddAuthentication(options =>
         };
     });
 builder.Services.Configure<RedisOptions>(builder.Configuration.GetSection("Redis"));
-
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddSingleton<IGameCacheService, GameCacheService>(sp =>
 {
     var options = sp.GetRequiredService<IOptions<RedisOptions>>().Value;
