@@ -39,7 +39,6 @@ public class BfsAlgorithm : IBfsAlgorithm
         {
             var current = queue.Dequeue();
 
-            // Próba ataku na obecny cel
             if (_gameBoard.Attack(current.Row, current.Col, board))
             {
                 return current;

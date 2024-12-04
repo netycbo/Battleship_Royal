@@ -32,7 +32,7 @@ public class ComputerShipPlacer : IComputerShipPlacer
 
         var computerBoard = _gameContext.ComputerPlayerBoard;
         _shipValidator.SetBoard(computerBoard);
-        _shipValidator.SetShips(_gameContext.Ships);
+        _shipValidator.SetShips(_gameContext.ComputerPlayerShips);
 
         var shipSizes = new List<int> { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
 
@@ -52,7 +52,7 @@ public class ComputerShipPlacer : IComputerShipPlacer
                     !_shapeChecker.IsSquareShape(coordinates) &&
                     _shipValidator.IsValidPlacement(startRow, startCol))
                 {
-                    PlaceShipOnBoard(coordinates, _gameContext.ComputerPlayerBoard, _gameContext.Ships);
+                    PlaceShipOnBoard(coordinates, _gameContext.ComputerPlayerBoard, _gameContext.ComputerPlayerShips);
                     placed = true;
                 }
             }

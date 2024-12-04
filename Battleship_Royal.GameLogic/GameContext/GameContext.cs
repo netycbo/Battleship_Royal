@@ -7,7 +7,8 @@ namespace Battleship_Royal.GameLogic.GameContext
     {
         public Cell[,] HumanPlayerBoard { get; set; }
         public Cell[,] ComputerPlayerBoard { get; set; }
-        public List<Ship> Ships { get; set; }
+        public List<Ship> HumanPlayerShips { get; set; }
+        public List<Ship> ComputerPlayerShips { get; set; }
 
         public GameContext(IBoardInitializer boardInitializer)
         {
@@ -15,7 +16,8 @@ namespace Battleship_Royal.GameLogic.GameContext
             Console.WriteLine("Human player board initialized.");
             ComputerPlayerBoard = boardInitializer.InitializeBoard(10, 10);
             Console.WriteLine("Computer player board initialized.");
-            Ships = new List<Ship>();
+            HumanPlayerShips = new List<Ship>();
+            ComputerPlayerShips = new List<Ship>();
             Console.WriteLine("GameContext initialized with board and ships - game context.");
            
         }

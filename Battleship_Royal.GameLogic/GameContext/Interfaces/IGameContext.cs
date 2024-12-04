@@ -5,6 +5,7 @@
         Cell[,] HumanPlayerBoard { get; set; }
 
         Cell[,] ComputerPlayerBoard { get; set; }
-        List<Ship> Ships { get; set; }
+        List<Ship> HumanPlayerShips { get; set; }
+        List<Ship> ComputerPlayerShips { get; set; }
     }
 }

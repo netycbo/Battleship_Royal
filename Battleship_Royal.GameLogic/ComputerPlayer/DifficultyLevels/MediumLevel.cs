@@ -19,7 +19,6 @@ namespace Battleship_Royal.GameLogic.ComputerPlayer.DifficultyLevels
             gameBoard.Attack(target.Row, target.Col, board);
             return target.Row * 10 + target.Col;
         }
-
         public int MakeMove()
         {
             int randomInt = random.Next(1, 101);
