@@ -18,7 +18,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
         public GameBoardServices(IGameContext gameContext, IShipPlacer shipPlacer, IShipValidator shipValidator)
         {
             _board = gameContext.HumanPlayerBoard ?? throw new ArgumentNullException(nameof(gameContext.HumanPlayerBoard));
-            _ships = gameContext.Ships ?? throw new ArgumentNullException(nameof(gameContext.Ships));
+            _ships = gameContext.HumanPlayerShips ?? throw new ArgumentNullException(nameof(gameContext.HumanPlayerShips));
             _shipPlacer = shipPlacer ?? throw new ArgumentNullException(nameof(shipPlacer));
             _shipValidator = shipValidator ?? throw new ArgumentNullException(nameof(shipValidator));
             _gameContext = gameContext;
@@ -54,7 +54,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
             {
                 if (board[row, col].HasShip)
                 {
-                    var hitShip = _gameContext.Ships.FirstOrDefault(ship => ship.Segments.Any(segment => segment == board[row, col]));
+                    var hitShip = _gameContext.HumanPlayerShips.FirstOrDefault(ship => ship.Segments.Any(segment => segment == board[row, col]));
 
                     if (hitShip != null && hitShip.IsSunk())
                     {
@@ -65,17 +65,13 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
                         Console.WriteLine("Statek został trafiony!");
                     }
                     return true;
-
                 }
                 tries++;
-
             }
             return false;
         }
-        
-
-        public int GetShipsCount() => _ships.Count;
-        public int GetHitsCount()
+        public int GetShipsCount(List<Ship> ships) => ships.Count;
+        public int GetHitsCount(Cell[,] board)
         {
             int count = 0;
             foreach (var cell in _board)
@@ -86,9 +82,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
                 }
             }
             return count;
-        }
-
-        
+        }     
     }
 }
 

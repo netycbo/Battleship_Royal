@@ -18,26 +18,24 @@ namespace Battleship_Royal.GameLogic
             _shipValidator = shipValidator;
         }
 
-        public void PlaceShip(List<(int Row, int Col)> coordinates)
-        {
+        //public void PlaceShip(List<(int Row, int Col)> coordinates)
+        //{
            
-            if (GetShipsCount() + coordinates.Count > 35)
-            {
-                throw new Exception("Exceeded maximum number of ship cells (35).");
-            }
+        //    if (GetShipsCount() + coordinates.Count > 10)
+        //    {
+        //        throw new Exception("Exceeded maximum number of ship cells (35).");
+        //    }
 
-            gameBoardServices.PlaceShip(coordinates);
-        }
-
-        public int GetShipsCount()
-        {
-            return gameBoardServices.GetShipsCount();
-        }
-
-        public int GetHitsCount()
-        {
-            return gameBoardServices.GetHitsCount();
-        }
+        //    gameBoardServices.PlaceShip(coordinates);
+        //}
+        //public int GetShipsCount()
+        //{
+        //    return gameBoardServices.GetShipsCount();
+        //}
+        //public int GetHitsCount()
+        //{
+        //    return gameBoardServices.GetHitsCount(_board);
+        //}
         public Cell GetCell(int row, int col)
         {
             if (row < 0 || row >= _board.GetLength(0) || col < 0 || col >= _board.GetLength(1))

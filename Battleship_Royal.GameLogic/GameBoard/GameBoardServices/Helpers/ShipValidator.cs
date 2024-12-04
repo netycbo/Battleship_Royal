@@ -11,7 +11,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers
         public ShipValidator(IGameContext gameContext)
         {
             _board = gameContext.HumanPlayerBoard ?? throw new ArgumentNullException(nameof(gameContext.HumanPlayerBoard));
-            _ships = gameContext.Ships ?? throw new ArgumentNullException(nameof(gameContext.Ships));
+            _ships = gameContext.HumanPlayerShips ?? throw new ArgumentNullException(nameof(gameContext.HumanPlayerShips));
         }
         public void SetBoard(Cell[,] board)
         {

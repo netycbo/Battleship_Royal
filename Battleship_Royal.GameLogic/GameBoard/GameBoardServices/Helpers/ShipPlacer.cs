@@ -1,9 +1,6 @@
 ﻿using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
 using Battleship_Royal.GameLogic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel.DataAnnotations;
+
 using Battleship_Royal.GameLogic.GameContext.Interfaces;
 
 public class ShipPlacer : IShipPlacer
@@ -15,7 +12,7 @@ public class ShipPlacer : IShipPlacer
     {
         _board = gameContext.HumanPlayerBoard ?? throw new ArgumentNullException(nameof(gameContext.HumanPlayerBoard));
         Console.WriteLine("z szip placera");
-        _ships = gameContext.Ships ?? throw new ArgumentNullException(nameof(gameContext.Ships));
+        _ships = gameContext.HumanPlayerShips ?? throw new ArgumentNullException(nameof(gameContext.HumanPlayerShips));
         _validator = validator ?? throw new ArgumentNullException(nameof(validator));
 
         Console.WriteLine("ShipPlacer initialized with shared GameContext - szip placer.");
