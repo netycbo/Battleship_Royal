@@ -2,7 +2,6 @@
 using Battleship_Royal.GameLogic.ComputerPlayer.Interfaces;
 using Battleship_Royal.GameLogic.GameBoard;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices;
-using Battleship_Royal.GameLogic.GameContext;
 using Battleship_Royal.GameLogic.GameContext.Interfaces;
 using System.ComponentModel;
 

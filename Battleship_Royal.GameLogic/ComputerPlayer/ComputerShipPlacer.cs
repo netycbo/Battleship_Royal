@@ -29,8 +29,7 @@ public class ComputerShipPlacer : IComputerShipPlacer
 
     public IGameContext PlaceShipsForComputer()
     {
-
-        var computerBoard = _gameContext.ComputerPlayerBoard;
+        var computerBoard = _gameContext.ReadyComputerPlayerBoard();
         _shipValidator.SetBoard(computerBoard);
         _shipValidator.SetShips(_gameContext.ComputerPlayerShips);
 
