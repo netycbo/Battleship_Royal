@@ -1,6 +1,9 @@
 ﻿@inject ICustomHttpClientFactory Http
 @inject ILogger<PrepareGameComponent> Logger
-@inject NavigationManager Navigation
+@inject IStateContainer State
+@rendermode InteractiveServer
+
+
 <EditForm Model="prepareGameRequest" OnValidSubmit="HandleValidSubmit" FormName="PrepareGame">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -48,7 +51,6 @@
 
         }
     }
-
     public async Task HandleValidSubmit()
     {
         Logger.LogInformation($"Form submitted with values: {prepareGameRequest}");
@@ -75,7 +77,11 @@
             {
                 Response = await response.Content.ReadFromJsonAsync<PrepareGameVsComputerResponse>();
                 Logger.LogInformation("Game prepared successfully.");
-                Navigation.NavigateTo($"/set-game/{Response?.Data.GameId}");
+                State.PlayerNickName = Response.Data.PlayerNickName;
+                State.DifficultyLevel = Response.Data.DifficultyLevel;
+                State.Timer = Response.Data.Timer;
+                Console.WriteLine($"State updated from Response: {State.PlayerNickName}, {State.DifficultyLevel}");
+               
             }
             else
             {

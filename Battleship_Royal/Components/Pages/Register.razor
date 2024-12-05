@@ -1,11 +1,14 @@
 ﻿@page "/register"
 
 @inject ICustomHttpClientFactory Http
+@inject ILogger<Register> Logger
+@inject NavigationManager Navigation
+@rendermode InteractiveServer 
 
 <h3>Rejestracja nowego użytkownika</h3>
 
 <EditForm Model="registrationRequest" OnValidSubmit="HandleValidSubmit" formname="registrationRequest">
-    <DataAnnotationsValidator > </DataAnnotationsValidator>
+    <DataAnnotationsValidatodr > </DataAnnotationsValidatodr>
     <ValidationSummary> </ValidationSummary>
 
     <div class="form-group">
@@ -54,7 +57,7 @@
     public NewUserRegistrationRequest registrationRequest { get; set; } = new NewUserRegistrationRequest();
     public NewUserRegistrationResponse registrationResponse { get; set; }
     private string errorMessage;
-
+    
     private async Task HandleValidSubmit()
     {
         try
@@ -62,11 +65,13 @@
             var client = Http.CreateClient("register");
 
             var response = await client.PostAsJsonAsync("register", registrationRequest);
+            Logger.LogInformation($"Rejestracja nowego użytkownika: {registrationRequest.Email}");
 
             if (response.IsSuccessStatusCode)
             {
                 registrationResponse = await response.Content.ReadFromJsonAsync<NewUserRegistrationResponse>();
-                errorMessage = null; // Clear any previous error messages
+                errorMessage = null;
+                Navigation.NavigateTo("login", true);
             }
             else
             {
@@ -76,7 +81,8 @@
         catch (Exception ex)
         {
             errorMessage = $"Wystąpił błąd: {ex.Message}";
+            Logger.LogError($"Błąd rejestracji: {ex.Message}");
         }
-
     }
+
 }

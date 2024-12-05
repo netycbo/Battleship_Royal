@@ -1,0 +1,153 @@
+﻿@inject ISetGameBoard Board
+@inject IComputerShipPlacer computerShipPlacer
+@inject IGameContext gameContext
+@inject IGameBoardServices gameBoardServices
+@inject IShipPlacer shipPlacer
+@inject IShipValidator shipValidator
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+<h3>Set Your Ships</h3>
+
+
+<div class="game-container">
+    <div class="containerGame">
+        <div class="game-board">
+            @for (int row = 0; row < 10; row++)
+            {
+                @for (int col = 0; col < 10; col++)
+                {
+                    var currentRow = row;
+                    var currentCol = col;
+                    var cell = gameContext.HumanPlayerBoard[row, col];
+
+                    <div class="cell @(cell.HasShip ? "ship" : "") @(IsCellSelected(currentRow, currentCol) ? "selected" : "")"
+                    @onclick="() => OnCellClick(currentRow, currentCol)">
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="side-panel">
+        <div class="button-row">
+            <button class="add-ship-button" style="visibility: @(gameContext.HumanPlayerShips.Count < 10 ? "visible" : "hidden")" @onclick="AddShip">Add Ship</button>
+         
+            <button class="start-game-button" style="@((gameContext.HumanPlayerShips.Count == 10) ? "visibility: visible;" : "visibility: hidden;")" @onclick="StartGame">Start Game</button>
+        </div>
+    </div>
+</div>
+
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="error-message">@errorMessage</div>
+}
+
+@code {
+    private bool isInitialized = false;
+    [Parameter]
+    public string GameId { get; set; }
+   
+    private List<(int Row, int Col)> shipCoordinates = new List<(int Row, int Col)>();
+    private string errorMessage = string.Empty;
+    private HashSet<(int Row, int Col)> selectedCells = new HashSet<(int Row, int Col)>();
+    private HashSet<(int Row, int Col)> tempSelectedCells = new HashSet<(int Row, int Col)>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("OnInitializedAsync called in SetGameComponent.");  
+        await gameContext.InitializeHumanPlayerBoard();
+        // ((ShipPlacer)shipPlacer).OnShipPlaced += HandleShipPlaced;
+        Console.WriteLine("SetGameComponent initialized successfully.");
+        isInitialized = true;
+       
+    }
+    private void HandleShipPlaced(object sender, EventArgs e)
+    {
+        StateHasChanged();
+        Console.WriteLine("Ship placed, re-rendering");
+    }
+    private async Task OnCellClick(int row, int col)
+    {
+        var cell = gameContext.HumanPlayerBoard[row, col];
+        var potentialCoordinates = new List<(int Row, int Col)>(shipCoordinates) { (row, col) };
+        Console.WriteLine($"number of coordinates: {row}, {col}");
+        if (!cell.HasShip)
+        {
+            if (!shipValidator.AreAdjacentCellsFree(potentialCoordinates, gameContext.HumanPlayerBoard))
+            {
+                await ShowErrorMessage("Invalid placement. Choose another cell.");
+                return;
+            }
+        }
+        else
+        {
+            await ShowErrorMessage("This cell is already occupied. Choose another cell.");
+            return;
+        }
+        if (tempSelectedCells.Contains((row, col)))
+        {
+            selectedCells.Remove((row, col));
+            shipCoordinates.Remove((row, col));
+            tempSelectedCells.Remove((row, col));
+        }
+        else
+        {
+            selectedCells.Add((row, col));
+            shipCoordinates.Add((row, col));
+            tempSelectedCells.Add((row, col));
+        }
+        Console.WriteLine($"Selected cells: {tempSelectedCells.Count}");
+        StateHasChanged(); 
+    }
+    private async Task ShowErrorMessage(string message)
+    {
+        errorMessage = message;
+        StateHasChanged();
+        await Task.Delay(3000);
+        errorMessage = string.Empty;
+    }
+    private async Task StartGame()
+    {
+        try
+        {
+            await computerShipPlacer.PlaceShipsForComputer();
+            Console.WriteLine("navigation to play game");
+            StateHasChanged();
+           
+            NavigationManager.NavigateTo("/playGame");
+         
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            StateHasChanged();
+        }
+       
+    }
+    private void AddShip()
+    {
+        if (shipCoordinates.Count == 0)
+        {
+            errorMessage = "You must select at least one cell to place a ship.";
+            return;
+        }
+        try
+        {
+            shipPlacer.PlaceShip(shipCoordinates);
+            errorMessage = null;
+            Console.WriteLine($"Ships count: {gameContext.HumanPlayerShips.Count} in Set Game component");
+            shipCoordinates.Clear();
+            tempSelectedCells.Clear();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            StateHasChanged();
+        }
+    }
+    private bool IsCellSelected(int row, int col)
+    {
+        return selectedCells.Contains((row, col));
+    }  
+}

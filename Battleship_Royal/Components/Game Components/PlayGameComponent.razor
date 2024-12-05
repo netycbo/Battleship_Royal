@@ -1,0 +1,64 @@
+﻿@page "/playGame"
+@using Battleship_Royal.GameLogic.GameContext.Interfaces
+@inject IGameContext gameContext
+@inject IGameBoardServices gameBoardServices
+@inject IStateContainer state
+@inject ITurnLogic turnLogic
+@inject ILogger<PlayGameComponent> logger
+@rendermode InteractiveServer
+
+<h3>PlayGameComponent</h3>
+<div class="gameplay-container">
+    <div class="player-board">
+        <h3>Your Board</h3>
+        <div class="game-board">
+            @for (int row = 0; row < 10; row++)
+            {
+                @for (int col = 0; col < 10; col++)
+                {
+                    var cell = gameContext.HumanPlayerBoard[row, col];
+                    <div class="cell @(cell.HasShip ? "ship" : "") @(cell.IsHit ? "hit" : "")">
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <h3>Computers Board</h3>
+    <div class="computer-board">
+        <h3>Computer's Board</h3>
+        <div class="game-board">
+            @for (int row = 0; row < 10; row++)
+            {
+                @for (int col = 0; col < 10; col++)
+                {
+                    var cell = gameContext.ComputerPlayerBoard[row, col];
+                    <div class="cell @(cell.IsHit ? "hit" : "")"
+                    @onclick="() => FireHandle(row, col)">
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <button class="fire-button" @onclick="() => FireHandle(selectedRow, selectedCol)">Fire</button>
+</div>
+@code {
+    protected override void OnInitialized()
+    {
+        
+        logger.LogInformation("PlayGameComponent initialized");
+        
+        state.OnStateChange += StateHasChanged;
+    }
+    private int selectedRow = 0;
+    private int selectedCol = 0;
+    private async Task FireHandle(int row, int col)
+    {
+        turnLogic.StartGame(row, col);   
+    }
+    private void SetTarget(int row, int col)
+    {
+        selectedRow = row;
+        selectedCol = col;
+        Console.WriteLine($"Selected target updated to Row: {selectedRow}, Col: {selectedCol}");
+    }
+}
