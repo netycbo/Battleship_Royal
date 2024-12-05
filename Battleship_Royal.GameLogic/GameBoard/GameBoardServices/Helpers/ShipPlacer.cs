@@ -10,7 +10,7 @@ public class ShipPlacer : IShipPlacer
     private readonly ICheckShipPlacement _validator;
     public ShipPlacer(IGameContext gameContext, ICheckShipPlacement validator)
     {
-        _board = gameContext.HumanPlayerBoard ?? throw new ArgumentNullException(nameof(gameContext.HumanPlayerBoard));
+        _board = gameContext.ReadyHumanPlayerBoard();
         Console.WriteLine("z szip placera");
         _ships = gameContext.HumanPlayerShips ?? throw new ArgumentNullException(nameof(gameContext.HumanPlayerShips));
         _validator = validator ?? throw new ArgumentNullException(nameof(validator));

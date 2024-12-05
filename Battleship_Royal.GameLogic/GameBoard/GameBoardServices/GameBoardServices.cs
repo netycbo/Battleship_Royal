@@ -1,7 +1,6 @@
 ﻿using Battleship_Royal.Data.Services.GameServices.Helpers;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers;
 using Battleship_Royal.GameLogic.GameBoard.GameBoardServices.Helpers.Interfaces;
-using Battleship_Royal.GameLogic.GameContext;
 using Battleship_Royal.GameLogic.GameContext.Interfaces;
 
 
@@ -17,8 +16,7 @@ namespace Battleship_Royal.GameLogic.GameBoard.GameBoardServices
 
         public GameBoardServices(IGameContext gameContext, IShipPlacer shipPlacer, IShipValidator shipValidator)
         {
-            _board = gameContext.HumanPlayerBoard ?? throw new ArgumentNullException(nameof(gameContext.HumanPlayerBoard));
-            _ships = gameContext.HumanPlayerShips ?? throw new ArgumentNullException(nameof(gameContext.HumanPlayerShips));
+
             _shipPlacer = shipPlacer ?? throw new ArgumentNullException(nameof(shipPlacer));
             _shipValidator = shipValidator ?? throw new ArgumentNullException(nameof(shipValidator));
             _gameContext = gameContext;
